@@ -2,10 +2,11 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import React from 'react';
 import './index.css';
-import Apps from './App.js';
+// import Apps from './App.js';
 import reportWebVitals from './reportWebVitals';
 import HomePage from './pages/homepage.js'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Login from './pages/login.js';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -13,7 +14,8 @@ root.render(
     <Router>
         <Routes>
           <Route exact path='/' element={<HomePage />}></Route>
-          <Route exact path='/app' element={<Apps />}></Route>
+          {/* <Route exact path='/app' element={<Apps />}></Route> */}
+          <Route exact path='/login' element={<Login />}></Route>
         </Routes>
       </Router>
   </React.StrictMode>
