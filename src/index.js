@@ -7,6 +7,8 @@ import reportWebVitals from './reportWebVitals';
 import HomePage from './pages/homepage.js'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Login from './pages/login.js';
+import 'react-toastify/dist/ReactToastify.css';
+import RestaurantSearch from './pages/restaurantSearch.js'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -16,6 +18,7 @@ root.render(
           <Route exact path='/' element={<HomePage />}></Route>
           {/* <Route exact path='/app' element={<Apps />}></Route> */}
           <Route exact path='/login' element={<Login />}></Route>
+          <Route exact path='/search' element={<RestaurantSearch />}></Route>
         </Routes>
       </Router>
   </React.StrictMode>
