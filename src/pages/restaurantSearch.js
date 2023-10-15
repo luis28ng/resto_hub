@@ -6,18 +6,35 @@ import React, { useState } from 'react';
 import "bootstrap/dist/css/bootstrap.css";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import axios from "axios";
 
 
 const RestaurantSearch = () => {
 
-    const [zipCode, setzipCode] = useState({
-        zip_code: ''
+    const [zip, setzip] = useState({
+        zipCode: ''
     });
+
+    // Include parameter 
+    async function getData () {
+        try {
+            const response = await axios.get('http://restohub-api.us-east-2.elasticbeanstalk.com/api/restaurants', 
+            // { params: { zipCode: zip_code } }, 
+            { headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json',
+            }});
+            console.log(response)
+            return response
+        } catch (e) {
+            console.log(e)
+        }
+    }
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setzipCode({
-            ...zipCode,
+        setzip({
+            ...zip,
             [name]: value
         });
     };
@@ -25,19 +42,20 @@ const RestaurantSearch = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        const {zip_code} = zipCode
+        const {zipCode} = zip
 
-        if (zip_code === '' || zip_code === null || !zip_code) {
-            toast.error('You must input a zip code!', {
+        if (zipCode === '' || zipCode === null || !zipCode || zipCode.length !== 5 ) {
+            toast.error('You must input a valid zip code!', {
                 position: toast.POSITION.TOP_RIGHT
             });
             return;
         }
 
-        console.log('Form submitted:', zip_code);
+        // getData(zipCode)
+        console.log('Form submitted:', zipCode);
     };
 
-
+    getData()
     return(
         <div>
             <div>
@@ -51,9 +69,9 @@ const RestaurantSearch = () => {
                         <Form.Control
                         type='text'
                         placeholder="Zip Code"
-                        id="zip_code"
-                        name="zip_code" 
-                        value={zipCode.zip_code}
+                        id="zipCode"
+                        name="zipCode" 
+                        value={zip.zipCode}
                         onChange={handleInputChange}
                         />
                     </Form.Group>
