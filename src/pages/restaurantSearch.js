@@ -2,7 +2,7 @@ import Navbar from "../components/navbar.js";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { Container } from "react-bootstrap";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import "bootstrap/dist/css/bootstrap.css";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -15,19 +15,16 @@ const RestaurantSearch = () => {
         zipCode: ''
     });
 
-    // Include parameter 
-    async function getData () {
+    useEffect(() => {
+        getData()
+    })
+
+    const getData = async () =>  {
         try {
-            const response = await axios.get('http://restohub-api.us-east-2.elasticbeanstalk.com/api/restaurants', 
-            // { params: { zipCode: zip_code } }, 
-            { headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Content-Type': 'application/json',
-            }});
-            console.log(response)
-            return response
-        } catch (e) {
-            console.log(e)
+            let response = await axios.get('http://restohub-api.us-east-2.elasticbeanstalk.com/api/restaurants')  
+            console.log(response)  
+        } catch (error) {
+            console.error(error)
         }
     }
 
@@ -55,7 +52,6 @@ const RestaurantSearch = () => {
         console.log('Form submitted:', zipCode);
     };
 
-    getData()
     return(
         <div>
             <div>
