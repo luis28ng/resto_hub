@@ -7,50 +7,102 @@ import "bootstrap/dist/css/bootstrap.css";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
+import DataTable from 'react-data-table-component';
+import Modal from 'react-bootstrap/Modal';
+import { FaEye } from 'react-icons/fa';
+
+const customStyles = {
+    rows: {
+        style: {
+            minHeight: '72px'
+        },
+    },
+    headCells: {
+        style: {
+            paddingLeft: '8px',
+            paddingRight: '8px',
+        },
+    },
+    cells: {
+        style: {
+            paddingLeft: '8px', 
+            paddingRight: '8px'
+        },
+    },
+  };
 
 
 const RestaurantSearch = () => {
 
-    const [zip, setzip] = useState({
-        zipCode: ''
-    });
+    const [zip, setZip] = useState('');
+    const [restaurants, setRestaurants] = useState([]);
+    const [selectedRow, setSelectedRow] = useState(null);
+    const [showModal, setShowModal] = useState(false);
 
-    useEffect(() => {
-        getData()
-    })
-
-    const getData = async () =>  {
-        try {
-            let response = await axios.get('http://restohub-api.us-east-2.elasticbeanstalk.com/api/restaurants')  
-            console.log(response)  
-        } catch (error) {
-            console.error(error)
-        }
-    }
+    // useEffect(() => {
+    //     getData();
+    // }, []);
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setzip({
-            ...zip,
-            [name]: value
-        });
+        console.log('Input Value:', e.target.value);
+        setZip(e.target.value);
+    };    
+    
+    const handleRowClick = (row) => {
+        setSelectedRow(row);
+        setShowModal(true);
     };
 
-    const handleSubmit = (e) => {
+    const handleIconClick = (row) => {
+        setSelectedRow(row);
+        setShowModal(true);
+    };
+
+    const handleModalClose = () => {
+        setShowModal(false);
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const {zipCode} = zip
-
-        if (zipCode === '' || zipCode === null || !zipCode || zipCode.length !== 5 ) {
+        if (zip === '' || zip === null || !zip || zip.length !== 5 ) {
             toast.error('You must input a valid zip code!', {
                 position: toast.POSITION.TOP_RIGHT
             });
             return;
         }
 
-        // getData(zipCode)
-        console.log('Form submitted:', zipCode);
+        try {
+            let response = await axios.get('http://restohub-api.us-east-2.elasticbeanstalk.com/api/restaurants', {
+                // params: {
+                //     zipCode: zip
+                // }
+            });
+            setRestaurants(response.data);
+            // console.log("API response", response);
+        } catch (error) {
+            console.error(error);
+            toast.error('Failed to fetch restaurant data. Please try again later.', {
+                position: toast.POSITION.TOP_RIGHT
+            });
+        }
+
+        console.log('Form submitted:', zip);
     };
+
+    const columns = [
+        {
+            name: 'Actions',
+            cell: (row) => (
+                <FaEye className="icon" onClick={() => handleIconClick(row)} />
+            ),
+            center: true,
+            button: true,
+        },
+        {name: 'Name', selector: (row, i) => row.name, center: true, sortable: true},
+        {name: 'Address', selector: (row, i) => row.streetAddress1, center: true, sortable: true },
+        {name: 'Zip code', selector: (row, i) => row.zipCode, center: true, sortable: true },
+      ];
 
     return(
         <div>
@@ -65,9 +117,8 @@ const RestaurantSearch = () => {
                         <Form.Control
                         type='text'
                         placeholder="Zip Code"
-                        id="zipCode"
                         name="zipCode" 
-                        value={zip.zipCode}
+                        value={zip}
                         onChange={handleInputChange}
                         />
                     </Form.Group>
@@ -80,7 +131,35 @@ const RestaurantSearch = () => {
             </Container>
             </div>
             <div>
-                <h1>Here goes the table</h1>
+                <DataTable 
+                    title={`All restaurants with zip code: ${zip}`}
+                    columns={columns}
+                    data={restaurants}
+                    fixedHeader
+                    customStyles={customStyles}
+                    striped
+                    onRowClicked={handleRowClick}
+                />
+                {selectedRow && (
+                <Modal show={showModal} onHide={() => setShowModal(false)}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Details</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        {/* <pre>{JSON.stringify(selectedRow, null, 2)}</pre> */}
+                        {/* Add more details if needed*/}
+                        <h5>Name: {selectedRow.name}</h5>
+                        <p>Address: {selectedRow.streetAddress1}</p>
+                        <p>City: {selectedRow.city}</p>
+                        <p>Zip Code: {selectedRow.zipCode}</p>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleModalClose}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+            )};
             </div>
         </div>
     );
