@@ -73,13 +73,17 @@ const RestaurantSearch = () => {
         }
 
         try {
-            let response = await axios.get('http://restohub-api.us-east-2.elasticbeanstalk.com/api/restaurants', {
-                // params: {
-                //     zipCode: zip
-                // }
+            let response = await axios.get('http://restohub-api.us-east-2.elasticbeanstalk.com/api/restaurants/search', {
+                params: {
+                    zipCode: zip
+                }
             });
+            if (response.data.length === 0) {
+                toast.error(`No restaurants with zip code: ${zip}`, {
+                    position: toast.POSITION.TOP_RIGHT
+                });
+            }
             setRestaurants(response.data);
-            // console.log("API response", response);
         } catch (error) {
             console.error(error);
             toast.error('Failed to fetch restaurant data. Please try again later.', {
