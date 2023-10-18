@@ -10,6 +10,7 @@ import axios from "axios";
 import DataTable from 'react-data-table-component';
 import Modal from 'react-bootstrap/Modal';
 import { FaEye } from 'react-icons/fa';
+import { Row, Col } from 'react-bootstrap'; 
 
 const customStyles = {
     rows: {
@@ -38,6 +39,7 @@ const RestaurantSearch = () => {
     const [restaurants, setRestaurants] = useState([]);
     const [selectedRow, setSelectedRow] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const [tableTitle, setTableTitle] = useState('All restaurants with zip code:');
 
     // useEffect(() => {
     //     getData();
@@ -89,8 +91,8 @@ const RestaurantSearch = () => {
             toast.error('Failed to fetch restaurant data. Please try again later.', {
                 position: toast.POSITION.TOP_RIGHT
             });
-        }
-
+        }; 
+        setTableTitle(`All restaurants with zip code: ${zip}`);
         console.log('Form submitted:', zip);
     };
 
@@ -136,7 +138,7 @@ const RestaurantSearch = () => {
             </div>
             <div>
                 <DataTable 
-                    title={`All restaurants with zip code: ${zip}`}
+                    title={tableTitle}
                     columns={columns}
                     data={restaurants}
                     fixedHeader
@@ -152,15 +154,27 @@ const RestaurantSearch = () => {
                     <Modal.Body>
                         {/* <pre>{JSON.stringify(selectedRow, null, 2)}</pre> */}
                         {/* Add more details if needed*/}
-                        <h5>Name: {selectedRow.name}</h5>
+                        <h5>Restaurant name: {selectedRow.name}</h5>
+                        <p></p>
                         <p>Address: {selectedRow.streetAddress1}</p>
                         <p>City: {selectedRow.city}</p>
-                        <p>Zip Code: {selectedRow.zipCode}</p>
+                        <p>Phone number: {selectedRow.phoneNumber}</p>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="secondary" onClick={handleModalClose}>
-                            Close
-                        </Button>
+                        <Container>
+                            <Row>
+                                <Col>
+                                    <Button variant="success">
+                                        Book now!
+                                    </Button>
+                                </Col>
+                                <Col className="text-end">
+                                    <Button variant="danger" onClick={handleModalClose}>
+                                        Close
+                                    </Button>
+                                </Col>
+                            </Row>
+                        </Container>
                     </Modal.Footer>
                 </Modal>
             )};
