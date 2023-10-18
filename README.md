@@ -1,5 +1,5 @@
-# BACKEND REPO LINK: (https://github.com/nikhil-01a/RestoHub-Backend)
-
+# BACKEND REPO LINK:
+https://github.com/nikhil-01a/RestoHub-Backend
 
 # Getting Started with Create React App
 
