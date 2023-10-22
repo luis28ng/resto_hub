@@ -2,7 +2,6 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import React from 'react';
 import './index.css';
-// import Apps from './App.js';
 import reportWebVitals from './reportWebVitals';
 // import HomePage from './pages/homepage.js'
 import 'bootstrap/dist/css/bootstrap.min.css';
