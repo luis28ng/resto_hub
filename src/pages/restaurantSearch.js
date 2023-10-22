@@ -9,7 +9,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
 import DataTable from 'react-data-table-component';
 import Modal from 'react-bootstrap/Modal';
-import { FaEye } from 'react-icons/fa';
 import { Row, Col } from 'react-bootstrap'; 
 
 const customStyles = {
@@ -37,9 +36,9 @@ const RestaurantSearch = () => {
 
     const [zip, setZip] = useState('');
     const [restaurants, setRestaurants] = useState([]);
-    const [selectedRow, setSelectedRow] = useState(null);
-    const [showModal, setShowModal] = useState(false);
     const [tableTitle, setTableTitle] = useState('All restaurants with zip code:');
+    const [showModal, setShowModal] = useState(false);
+
 
     // useEffect(() => {
     //     getData();
@@ -49,20 +48,6 @@ const RestaurantSearch = () => {
         console.log('Input Value:', e.target.value);
         setZip(e.target.value);
     };    
-    
-    const handleRowClick = (row) => {
-        setSelectedRow(row);
-        setShowModal(true);
-    };
-
-    const handleIconClick = (row) => {
-        setSelectedRow(row);
-        setShowModal(true);
-    };
-
-    const handleModalClose = () => {
-        setShowModal(false);
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -97,19 +82,47 @@ const RestaurantSearch = () => {
     };
 
     const columns = [
-        {
-            name: 'Actions',
-            cell: (row) => (
-                <FaEye className="icon" onClick={() => handleIconClick(row)} />
-            ),
-            center: true,
-            button: true,
-        },
         {name: 'Name', selector: (row, i) => row.name, center: true, sortable: true},
         {name: 'Address', selector: (row, i) => row.streetAddress1, center: true, sortable: true },
         {name: 'Zip code', selector: (row, i) => row.zipCode, center: true, sortable: true },
-      ];
+    ];
 
+    const ExpandableRowComponent = ({ data }) => {
+        const handleBookNowClick = () => {
+            setShowModal(true);
+        };
+        return (
+            <>
+                {data && (
+                    <div>
+                        <Container>
+                            <Row>
+                                <Col xs={5}>
+                                </Col>
+                                <Col>
+                                    <div>
+                                        <p></p>
+                                        <h3>{data.name}</h3>
+                                        <p></p>
+                                        <p>Address: {data.streetAddress1}</p>
+                                        <p>City: {data.city}</p>
+                                        <p>Phone number: {data.phoneNumber}</p>
+                                    </div>
+                                    <Button variant="success" onClick={handleBookNowClick}>
+                                        Book Now!
+                                    </Button>
+                                </Col>
+                                <Col>
+                                </Col>
+                            </Row>
+                        </Container>
+                    </div>
+                )}
+            </>
+        );
+    };
+    
+    
     return(
         <div>
             <div>
@@ -144,41 +157,24 @@ const RestaurantSearch = () => {
                     fixedHeader
                     customStyles={customStyles}
                     striped
-                    onRowClicked={handleRowClick}
+                    expandableRows
+                    expandableRowsComponent={ExpandableRowComponent}
                 />
-                {selectedRow && (
+            </div>
                 <Modal show={showModal} onHide={() => setShowModal(false)}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Details</Modal.Title>
+                        <Modal.Title>Booking Details</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        {/* <pre>{JSON.stringify(selectedRow, null, 2)}</pre> */}
-                        {/* Add more details if needed*/}
-                        <h5>Restaurant name: {selectedRow.name}</h5>
-                        <p></p>
-                        <p>Address: {selectedRow.streetAddress1}</p>
-                        <p>City: {selectedRow.city}</p>
-                        <p>Phone number: {selectedRow.phoneNumber}</p>
+                        
+                        Here goes the reservation form
+                        
                     </Modal.Body>
                     <Modal.Footer>
-                        <Container>
-                            <Row>
-                                <Col>
-                                    <Button variant="success">
-                                        Book now!
-                                    </Button>
-                                </Col>
-                                <Col className="text-end">
-                                    <Button variant="danger" onClick={handleModalClose}>
-                                        Close
-                                    </Button>
-                                </Col>
-                            </Row>
-                        </Container>
+                        <Button variant="danger" onClick={() => setShowModal(false)}>Close</Button>
+                        <Button variant="success" type="submit">Confirm Booking</Button>
                     </Modal.Footer>
                 </Modal>
-            )};
-            </div>
         </div>
     );
 }  
