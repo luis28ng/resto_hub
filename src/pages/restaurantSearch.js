@@ -1,7 +1,4 @@
 import Navbar from "../components/navbar.js";
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import { Container } from "react-bootstrap";
 import React, { useEffect, useState } from 'react';
 import "bootstrap/dist/css/bootstrap.css";
 import { toast, ToastContainer } from 'react-toastify';
@@ -9,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
 import DataTable from 'react-data-table-component';
 import Modal from 'react-bootstrap/Modal';
-import { Row, Col } from 'react-bootstrap'; 
+import { Row, Col, Button, Form, Container } from 'react-bootstrap'; 
 
 const customStyles = {
     rows: {
@@ -38,7 +35,7 @@ const RestaurantSearch = () => {
     const [restaurants, setRestaurants] = useState([]);
     const [tableTitle, setTableTitle] = useState('All restaurants with zip code:');
     const [showModal, setShowModal] = useState(false);
-
+    const [partySize, setPartySize] = useState('');
 
     // useEffect(() => {
     //     getData();
@@ -47,7 +44,7 @@ const RestaurantSearch = () => {
     const handleInputChange = (e) => {
         console.log('Input Value:', e.target.value);
         setZip(e.target.value);
-    };    
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -122,7 +119,30 @@ const RestaurantSearch = () => {
         );
     };
     
-    
+    const handlePartySizeChange = async (e) => {
+        const selectedPartySize = e.target.value;
+        setPartySize(selectedPartySize);
+
+        // Check if a party size is selected
+        if (selectedPartySize !== "") {
+            try {
+                const apiUrl = 'http://example.com/api/endpoint';
+                const params = {
+                    partySize: selectedPartySize
+                };
+
+                // Make the API call using Axios
+                const response = await axios.get(apiUrl, { params });
+
+
+                console.log('API Response:', response.data);
+            } catch (error) {
+                console.error('Error fetching data from API:', error);
+                // Handle errors (display error messages, etc.)
+            }
+        }
+    };
+
     return(
         <div>
             <div>
@@ -166,9 +186,16 @@ const RestaurantSearch = () => {
                         <Modal.Title>Booking Details</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        
-                        Here goes the reservation form
-                        
+                        <div className="form-group">
+                            <label htmlFor="exampleDropdown">Select your party size:</label>
+                            <select className="form-control" id="exampleDropdown" defaultValue={""} value={partySize} onChange={handlePartySizeChange}>
+                                <option value="" disabled>Select the number of people</option>
+                                <option value="option-1">1</option>
+                                <option value="option-2">2</option>
+                                <option value="option-3">3</option>
+                                <option value="option-4">4</option>
+                            </select>
+                        </div>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="danger" onClick={() => setShowModal(false)}>Close</Button>
