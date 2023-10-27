@@ -6,7 +6,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
 import DataTable from 'react-data-table-component';
 import Modal from 'react-bootstrap/Modal';
-import { Row, Col, Button, Form, Container } from 'react-bootstrap'; 
+import { Row, Col, Button, Form, Container } from 'react-bootstrap';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css'; 
 
 const customStyles = {
     rows: {
@@ -36,12 +38,26 @@ const RestaurantSearch = () => {
     const [tableTitle, setTableTitle] = useState('All restaurants with zip code:');
     const [showModal, setShowModal] = useState(false);
     const [partySize, setPartySize] = useState('');
+    const [selectedRestaurant, setSelectedRestaurant] = useState('');
+    const [selectedDate, setSelectedDate] = useState(null);
+    const [unavailableSlots, setUnavailableSlots] = useState([]);
+    const [userInfo, setUserInfo] = useState({
+        firstName: '',
+        lastName: '',
+        email: ''
+    })
+
+    const resetModalState = () => {
+        setUserInfo({});
+        setPartySize('');
+        setSelectedDate('');
+    };
 
     // useEffect(() => {
     //     getData();
     // }, []);
 
-    const handleInputChange = (e) => {
+    const handleZipCodeChange = (e) => {
         console.log('Input Value:', e.target.value);
         setZip(e.target.value);
     };
@@ -88,6 +104,7 @@ const RestaurantSearch = () => {
         const handleBookNowClick = () => {
             setShowModal(true);
         };
+        setSelectedRestaurant(data.id)
         return (
             <>
                 {data && (
@@ -126,22 +143,76 @@ const RestaurantSearch = () => {
         // Check if a party size is selected
         if (selectedPartySize !== "") {
             try {
-                const apiUrl = 'http://example.com/api/endpoint';
                 const params = {
+                    restaurantId: selectedRestaurant,
                     partySize: selectedPartySize
                 };
 
                 // Make the API call using Axios
-                const response = await axios.get(apiUrl, { params });
+                const response = await axios.get('http://restohub-api.us-east-2.elasticbeanstalk.com/api/reservations/getReservedTimes', { params });
 
 
                 console.log('API Response:', response.data);
+                const unavailableSlots = response.data.map((reservation) => {
+                    const reservationDate = new Date(reservation.reservationDate);
+                    return reservationDate;
+                  });
+
+                setUnavailableSlots(unavailableSlots);
+
             } catch (error) {
                 console.error('Error fetching data from API:', error);
-                // Handle errors (display error messages, etc.)
             }
         }
     };
+      
+      
+    const isDateDisabled = (date) => {
+        // Check if the date is in the list of disabled dates and times
+        for (const reservedDate of unavailableSlots) {
+            if (date.getFullYear() === reservedDate.getFullYear() &&
+                date.getMonth() === reservedDate.getMonth() &&
+                date.getDate() === reservedDate.getDate() &&
+                date.getHours() === reservedDate.getHours() &&
+                date.getMinutes() === reservedDate.getMinutes()) {
+                    // If both date and time match, it's disabled
+                    return false;
+                };
+            }
+            // If no match is found, the date is not disabled
+            return true;
+        };
+    
+    const handleUserInfoChange = (e) => {
+        const { name, value } = e.target;
+        setUserInfo((prevData) => ({
+        ...prevData,
+        [name]: value,
+        }));
+    };
+
+    const handleBooking = async (e) => {
+        e.preventDefault();
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        // Check if the email is valid
+        if (!emailRegex.test(userInfo.email)) {
+            toast.error("Invalid email address", {
+                position: toast.POSITION.TOP_RIGHT
+            })
+            return;
+        };
+        
+        const reservationInfo = {
+            ...userInfo,
+            partySize: partySize,
+            selectedReservationDate: selectedDate,
+            selectedRestaurantID: selectedRestaurant
+        }
+        console.log(reservationInfo)
+    }
+    
 
     return(
         <div>
@@ -158,7 +229,7 @@ const RestaurantSearch = () => {
                         placeholder="Zip Code"
                         name="zipCode" 
                         value={zip}
-                        onChange={handleInputChange}
+                        onChange={handleZipCodeChange}
                         />
                     </Form.Group>
                     <Form.Group className="d-grid gap-2">
@@ -181,26 +252,87 @@ const RestaurantSearch = () => {
                     expandableRowsComponent={ExpandableRowComponent}
                 />
             </div>
-                <Modal show={showModal} onHide={() => setShowModal(false)}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Booking Details</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <div className="form-group">
-                            <label htmlFor="exampleDropdown">Select your party size:</label>
-                            <select className="form-control" id="exampleDropdown" defaultValue={""} value={partySize} onChange={handlePartySizeChange}>
-                                <option value="" disabled>Select the number of people</option>
-                                <option value="option-1">1</option>
-                                <option value="option-2">2</option>
-                                <option value="option-3">3</option>
-                                <option value="option-4">4</option>
-                            </select>
-                        </div>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="danger" onClick={() => setShowModal(false)}>Close</Button>
-                        <Button variant="success" type="submit">Confirm Booking</Button>
-                    </Modal.Footer>
+                <Modal show={showModal} onHide={() => {setShowModal(false); resetModalState();}}>
+                    <Container>
+                        <Form className="formclass centered" onSubmit={handleBooking}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Booking Details</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <Form.Group>
+                                    <div className="form-group">
+                                        <Form.Label>Select your party size:</Form.Label>
+                                        <Form.Select value={partySize} onChange={handlePartySizeChange}>
+                                            <option value="" disabled>Select the number of people</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                        </Form.Select>
+                                        <p></p>
+                                            {partySize && (
+                                                <div className="form-group">
+                                                    <Form.Label>Select Date and Time:</Form.Label>
+                                                    <p></p>
+                                                    <DatePicker
+                                                        placeholderText="Click to select a date"
+                                                        showIcon
+                                                        selected={selectedDate}
+                                                        minTime={new Date().setHours(10, 0)} // 10:00 AM
+                                                        maxTime={new Date().setHours(22, 0)} // 10:00 PM
+                                                        onChange={(date) => setSelectedDate(date)}
+                                                        filterDate={isDateDisabled}
+                                                        filterTime={isDateDisabled}
+                                                        minDate={new Date()}
+                                                        showTimeSelect
+                                                        dateFormat="Pp"
+                                                        timeIntervals={60}
+                                                    />
+                                                </div>
+                                            )}
+                                        <p></p>
+                                            {selectedDate && (
+                                                <div className="form-group">
+                                                    <Form.Label>First name</Form.Label>
+                                                    <Form.Control
+                                                        type='text'
+                                                        placeholder="First Name"
+                                                        name="firstName"
+                                                        value={userInfo.firstName}
+                                                        onChange={handleUserInfoChange}
+                                                        required
+                                                    />
+                                                    <Form.Label>Last name</Form.Label>
+                                                    <Form.Control
+                                                        type='text'
+                                                        placeholder="Last Name"
+                                                        name="lastName"
+                                                        value={userInfo.lastName}
+                                                        onChange={handleUserInfoChange}
+                                                        required 
+                                                    />
+                                                    <Form.Label>Email</Form.Label>
+                                                    <Form.Control
+                                                        type='text'
+                                                        placeholder="Email"
+                                                        name="email"
+                                                        value={userInfo.email}
+                                                        onChange={handleUserInfoChange}
+                                                        required 
+                                                    />
+                                                </div>
+                                            )}
+                                    </div>
+                                </Form.Group>
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Form.Group className="w-100 d-flex justify-content-between">
+                                    <Button variant="danger" onClick={() => setShowModal(false)}>Close</Button>
+                                    <Button variant="success" type="submit">Confirm Booking</Button>
+                                </Form.Group>
+                            </Modal.Footer>
+                        </Form>
+                    </Container>
                 </Modal>
         </div>
     );
