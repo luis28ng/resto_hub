@@ -9,6 +9,7 @@ import Login from '../src/pages/login.js';
 import 'react-toastify/dist/ReactToastify.css';
 import RestaurantSearch from '../src/pages/restaurantSearch.js'
 import NotFound from '../src/pages/notfound.js'
+import AdminLogin from './pages/AdminLogin';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -19,6 +20,7 @@ root.render(
           <Route exact path='*' element={<NotFound />}></Route>
           <Route exact path='/login' element={<Login />}></Route>
           <Route exact path='/' element={<RestaurantSearch />}></Route>
+          <Route exact path='/admin-login' element={<AdminLogin />}></Route>
         </Routes>
       </Router>
   </React.StrictMode>
