@@ -1,4 +1,5 @@
 import Navbar from "../components/navbar.js";
+import { Link } from 'react-router-dom';
 import "bootstrap/dist/css/bootstrap.css";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
@@ -72,6 +73,14 @@ const Login = () => {
                     <Button className="mb-5" type="submit" variant="success" size="lg">
                         Log in
                     </Button>
+
+                    {/* Added an "Admin Login" button */}
+                    <Link to="/admin-login">
+                        <Button variant="primary" size="lg">
+                            Admin Login
+                        </Button>
+                    </Link>
+                        
                     </Form.Group>
                 </Form>
             </Container>
