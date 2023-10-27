@@ -181,8 +181,12 @@ const RestaurantSearch = () => {
             }
             // If no match is found, the date is not disabled
             return true;
-        };
+    };
     
+    const handleDayChange = (date) => {
+        setSelectedDate(date)
+    };
+
     const handleUserInfoChange = (e) => {
         const { name, value } = e.target;
         setUserInfo((prevData) => ({
@@ -203,11 +207,13 @@ const RestaurantSearch = () => {
             })
             return;
         };
-        
+
+        var formattedDate = selectedDate.toISOString().slice(0, 19).replace("T", " ");
+
         const reservationInfo = {
             ...userInfo,
             partySize: partySize,
-            selectedReservationDate: selectedDate,
+            reservationDate: formattedDate,
             selectedRestaurantID: selectedRestaurant
         }
         console.log(reservationInfo)
@@ -280,7 +286,7 @@ const RestaurantSearch = () => {
                                                         selected={selectedDate}
                                                         minTime={new Date().setHours(10, 0)} // 10:00 AM
                                                         maxTime={new Date().setHours(22, 0)} // 10:00 PM
-                                                        onChange={(date) => setSelectedDate(date)}
+                                                        onChange={handleDayChange}
                                                         filterDate={isDateDisabled}
                                                         filterTime={isDateDisabled}
                                                         minDate={new Date()}
