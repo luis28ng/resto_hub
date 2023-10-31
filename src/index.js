@@ -1,28 +1,40 @@
-import ReactDOM from 'react-dom/client';
-import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
 import React from 'react';
-import './index.css';
-import reportWebVitals from './reportWebVitals';
-// import HomePage from './pages/homepage.js'
-import 'bootstrap/dist/css/bootstrap.min.css';
+
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+
+import ReactDOM from 'react-dom/client';
+
 import Login from '../src/pages/login.js';
-import 'react-toastify/dist/ReactToastify.css';
-import RestaurantSearch from '../src/pages/restaurantSearch.js'
 import NotFound from '../src/pages/notfound.js'
-import AdminLogin from './pages/AdminLogin';
+import reportWebVitals from './reportWebVitals';
+import UserDashBoard from '../src/pages/user-dashboard.js';
+import AdminDashBoard from '../src/pages/admin-dashboard.js';
+import WaiterDashBoard from '../src/pages/waiter-dashboard.js';
+import StaffDashBoard from '../src/pages/staff-dashboard.js';
+import RestaurantSearch from '../src/pages/restaurantSearch.js'
+import ManagerDashBoard from '../src/pages/manager-dashboard.js';
+
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-toastify/dist/ReactToastify.css';
+
+import './index.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Router>
-        <Routes>
-          {/* <Route exact path='/' element={<HomePage />}></Route> */}
-          <Route exact path='*' element={<NotFound />}></Route>
-          <Route exact path='/login' element={<Login />}></Route>
-          <Route exact path='/' element={<RestaurantSearch />}></Route>
-          <Route exact path='/admin-login' element={<AdminLogin />}></Route>
-        </Routes>
-      </Router>
+      <Routes>
+        {/* <Route exact path='/' element={<HomePage />}></Route> */}
+        <Route exact path='*' element={<NotFound />}></Route>
+        <Route exact path='/login' element={<Login />}></Route>
+        <Route exact path='/admin-dashboard' element={<AdminDashBoard/>}></Route>
+        <Route exact path='/manager-dashboard' element={<ManagerDashBoard/>}></Route>        
+        <Route exact path='/waiter-dashboard' element={<WaiterDashBoard />}></Route>
+        <Route exact path='/staff-dashboard' element={<StaffDashBoard />}></Route>
+        <Route exact path='/user-dashboard' element={<UserDashBoard />}></Route>
+        <Route exact path='/' element={<RestaurantSearch />}></Route>
+      </Routes>
+    </Router>
   </React.StrictMode>
 );
 
