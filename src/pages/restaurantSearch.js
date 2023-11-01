@@ -44,7 +44,7 @@ const RestaurantSearch = () => {
     const [userInfo, setUserInfo] = useState({
         firstName: '',
         lastName: '',
-        email: ''
+        emailAddress: ''
     })
 
     const resetModalState = () => {
@@ -209,15 +209,41 @@ const RestaurantSearch = () => {
         };
 
         var formattedDate = selectedDate.toISOString().slice(0, 19).replace("T", " ");
+        const parsedPartySize = parseInt(partySize, 10);
 
         const reservationInfo = {
             ...userInfo,
-            partySize: partySize,
+            partySize: parsedPartySize,
             reservationDate: formattedDate,
-            selectedRestaurantID: selectedRestaurant
+            restaurantId: selectedRestaurant
         }
         console.log(reservationInfo)
-    }
+        try {
+            const response = await axios.post('http://restohub-api.us-east-2.elasticbeanstalk.com/api/reservations/create', reservationInfo, {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            const reservationID = response.data.id
+            // Handle the response as needed
+            if (response.status === 200) {
+                toast.success(`Reservation submitted successfully. Your reservation id is ${reservationID}`, {
+                    position: toast.POSITION.TOP_RIGHT
+                });
+                resetModalState();
+                setShowModal(false)
+
+            } else {
+                toast.error("Failed to submit reservation, please try again", {
+                    position: toast.POSITION.TOP_RIGHT
+                });
+            }
+        } catch (error) {
+            toast.error("Error occurred while submitting reservation", {
+                position: toast.POSITION.TOP_RIGHT
+            });
+        }
+    };
     
 
     return(

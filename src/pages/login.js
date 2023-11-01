@@ -20,11 +20,11 @@ import '../css/login.css'
 const Login = () => {
 
     const [logInfo, setlogInfo] = useState({
-        email_address: '',
+        email: '',
         password: ''
     });
 
-    const navigate =useNavigate();
+    // const navigate = useNavigate();
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -37,10 +37,10 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
     
-        const { email_address, password } = logInfo;
+        const { email, password } = logInfo;
     
         // Check if both fields are filled
-        if (!email_address || !password) {
+        if (!email || !password) {
             toast.error('Both fields are required.', {
                 position: toast.POSITION.TOP_RIGHT
             });
@@ -50,28 +50,50 @@ const Login = () => {
         try{
             // Make a POST request to the backend for authentication
             const response = await axios.post(
-                `http://localhost:8080/login?email=${email_address}&password=${password}`
-            );
+                'http://restohub-api.us-east-2.elasticbeanstalk.com/login', {
 
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                },
+                {
+                    params: {
+                        email: email,
+                        password: password
+                    }
+                }
+            );
+            
             const jwtToken = response.data.jwtToken;
             const userRole = response.data.userRole;
 
-            // Store the JWT token and user role in LocalStorage
-            localStorage.setItem('jwtToken', jwtToken);
-            localStorage.setItem('userRole', userRole);
+            if (response.status === 200) {
+                toast.success('Log in successful', {
+                    position: toast.POSITION.TOP_RIGHT
+                });
 
-            // Redirect the user based on their role 
-            if (userRole === 'RESTOHUB_OWNER') {
-                navigate.push('/admin-dashboard');
-            }if (userRole === 'RESTAURANT_MANAGER') {
-                navigate.push('/manager-dashboard');
-            }if (userRole === 'RESTAURANT_STAFF') {
-                navigate.push('/staff-dashboard');
-            }if (userRole === 'RESTAURANT_WAITER') {
-                navigate.push('/waiter-dashboard');
-            } else{
-                navigate.push('/user-dashboard');
+                console.log(jwtToken)
+                console.log(userRole)
+
+                setlogInfo({})
+
+                // localStorage.setItem('jwtToken', jwtToken);
+                // localStorage.setItem('userRole', userRole);
+
+                // Redirect the user based on their role 
+                // if (userRole === 'RESTOHUB_OWNER') {
+                //     navigate.push('/admin-dashboard');
+                // }if (userRole === 'RESTAURANT_MANAGER') {
+                //     navigate.push('/manager-dashboard');
+                // }if (userRole === 'RESTAURANT_STAFF') {
+                //     navigate.push('/staff-dashboard');
+                // }if (userRole === 'RESTAURANT_WAITER') {
+                //     navigate.push('/waiter-dashboard');
+                // } else{
+                //     navigate.push('/user-dashboard');
+                // }
             }
+
         } catch (e) { 
             // Handle authentication errors
             console.log(e)
@@ -93,9 +115,9 @@ const Login = () => {
                         <Form.Control
                         type="email"
                         placeholder="Email address"
-                        id="email_address"
-                        name="email_address" 
-                        value={logInfo.email_address}
+                        id="email"
+                        name="email" 
+                        value={logInfo.email}
                         onChange={handleInputChange}
                         />
                     </Form.Group>
