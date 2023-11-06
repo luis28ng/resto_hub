@@ -301,7 +301,7 @@ const RestaurantSearch = () => {
                                             <option value="3">3</option>
                                             <option value="4">4</option>
                                         </Form.Select>
-                                        <p></p>
+                                        <br></br>
                                             {partySize && (
                                                 <div className="form-group">
                                                     <Form.Label>Select Date and Time:</Form.Label>
@@ -322,7 +322,7 @@ const RestaurantSearch = () => {
                                                     />
                                                 </div>
                                             )}
-                                        <p></p>
+                                            <br></br>
                                             {selectedDate && (
                                                 <div className="form-group">
                                                     <Form.Label>First name</Form.Label>
