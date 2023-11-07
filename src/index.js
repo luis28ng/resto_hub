@@ -18,6 +18,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 import './index.css';
+import '../src/css/restaurantSearch.css'
+import '../src/css/login.css'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -28,10 +30,10 @@ root.render(
         <Route exact path='*' element={<NotFound />}></Route>
         <Route exact path='/login' element={<Login />}></Route>
         <Route exact path='/admin-dashboard' element={<AdminDashBoard/>}></Route>
-        <Route exact path='/manager-dashboard' element={<ManagerDashBoard/>}></Route>        
-        <Route exact path='/waiter-dashboard' element={<WaiterDashBoard />}></Route>
-        <Route exact path='/staff-dashboard' element={<StaffDashBoard />}></Route>
-        <Route exact path='/user-dashboard' element={<UserDashBoard />}></Route>
+        <Route exact path='/managerDashboard' element={<ManagerDashBoard/>}></Route>        
+        <Route exact path='/waiterDashboard' element={<WaiterDashBoard />}></Route>
+        <Route exact path='/staffDashboard' element={<StaffDashBoard />}></Route>
+        <Route exact path='/userDashboard' element={<UserDashBoard />}></Route>
         <Route exact path='/' element={<RestaurantSearch />}></Route>
       </Routes>
     </Router>
