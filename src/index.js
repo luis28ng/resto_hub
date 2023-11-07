@@ -9,7 +9,7 @@ import NotFound from '../src/pages/notfound.js'
 import reportWebVitals from './reportWebVitals';
 import UserDashBoard from '../src/pages/user-dashboard.js';
 import AdminDashBoard from '../src/pages/admin-dashboard.js';
-import WaiterDashBoard from '../src/pages/waiter-dashboard.js';
+import WaiterDashBoard from './pages/customerOrderDashboard.js';
 import StaffDashBoard from '../src/pages/staff-dashboard.js';
 import RestaurantSearch from '../src/pages/restaurantSearch.js'
 import ManagerDashBoard from '../src/pages/manager-dashboard.js';
@@ -31,7 +31,7 @@ root.render(
         <Route exact path='/login' element={<Login />}></Route>
         <Route exact path='/admin-dashboard' element={<AdminDashBoard/>}></Route>
         <Route exact path='/managerDashboard' element={<ManagerDashBoard/>}></Route>        
-        <Route exact path='/waiterDashboard' element={<WaiterDashBoard />}></Route>
+        <Route exact path='/staffDashboard/customerOrder' element={<WaiterDashBoard />}></Route>
         <Route exact path='/staffDashboard' element={<StaffDashBoard />}></Route>
         <Route exact path='/userDashboard' element={<UserDashBoard />}></Route>
         <Route exact path='/' element={<RestaurantSearch />}></Route>

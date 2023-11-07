@@ -5,7 +5,7 @@ const WaiterDashBoard = () => {
     return(
         <div>
             <Navbar />
-            <h1>Waiter Dashboard</h1>
+            <h1>Customer order dashboard</h1>
         </div>
     );
 }  
