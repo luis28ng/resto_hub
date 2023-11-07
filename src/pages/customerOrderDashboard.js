@@ -1,4 +1,9 @@
 import Navbar from "../components/navbar.js";
+import React, { useEffect, useState } from 'react';
+import "bootstrap/dist/css/bootstrap.css";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import axios from "axios";
 
 
 const WaiterDashBoard = () => {
