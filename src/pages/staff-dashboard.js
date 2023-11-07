@@ -123,6 +123,8 @@ const StaffDashBoard = () => {
                         fixedHeader
                         striped
                         selectableRows
+                        selectableRowsSingle={true}
+                        selectableRowsNoSelectAll
                         onSelectedRowsChange={handleRowSelected} 
                         selectableRowsHighlight
                         />
@@ -142,6 +144,8 @@ const StaffDashBoard = () => {
                         fixedHeader
                         striped
                         selectableRows
+                        selectableRowsSingle={true}
+                        selectableRowsNoSelectAll
                         onSelectedRowsChange={handleRowSelected} 
                         selectableRowsHighlight
                         />
