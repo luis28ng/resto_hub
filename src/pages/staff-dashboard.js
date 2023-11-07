@@ -4,8 +4,9 @@ import "bootstrap/dist/css/bootstrap.css";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
-import { Row, Col, Button, Form, Container, Tab, Tabs } from 'react-bootstrap';
+import { Button, Container, Tab, Tabs } from 'react-bootstrap';
 import DataTable from 'react-data-table-component';
+import { getRestId } from "../utils/utils.js";
 
 
 const StaffDashBoard = () => {
@@ -13,6 +14,7 @@ const StaffDashBoard = () => {
     const [reservations, setReservations] = useState([]);
     const [dateRange, setDateRange] = useState([]);
     const [selectedRows, setSelectedRows] = useState([]);
+    const [restaurantId, setRestaurantId] = useState('')
 
     const selectedDateRangeToday = () => {
         console.log("Today tab selected");
@@ -42,13 +44,14 @@ const StaffDashBoard = () => {
 
     useEffect(() => {
         selectedDateRangeToday(); // Set the active tab and date range for "today" tab
+        setRestaurantId(getRestId);
     }, []);
 
     useEffect(() => {
         const fetchData = async () => {
             const [startDate, endDate] = dateRange;
             const params = {
-                restaurantId: "1", // restaurantId is hardcoded for now
+                restaurantId: restaurantId, // restaurantId is hardcoded for now
                 startDate: startDate,
                 endDate: endDate
             };
@@ -113,7 +116,9 @@ const StaffDashBoard = () => {
                 <Tab eventKey="today" title="Today">
                     <br></br>
                     <Container>
-                        <Button onClick={handleCheckIn} variant="success">Check-In</Button>
+                        {reservations.length > 0 && (
+                            <Button onClick={handleCheckIn} variant="success">Check-In</Button>
+                        )}
                     </Container>
                     <br></br>
                     <Container>
@@ -129,12 +134,13 @@ const StaffDashBoard = () => {
                         selectableRowsHighlight
                         />
                     </Container>
-
                 </Tab>
                 <Tab eventKey="thisWeek" title="This week">
                     <br></br>
                     <Container>
-                        <Button onClick={handleCheckIn} variant="success">Check-In</Button>
+                        {reservations.length > 0 && (
+                            <Button onClick={handleCheckIn} variant="success">Check-In</Button>
+                        )}
                     </Container>
                     <br></br>
                     <Container>

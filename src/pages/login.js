@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import axios from 'axios'
 import { Container } from "react-bootstrap";
@@ -15,6 +14,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import '../css/login.css'
 
+import { redirectToUserDashboard } from '../utils/utils.js';
 
 
 const Login = () => {
@@ -65,34 +65,28 @@ const Login = () => {
             );
             
             const jwtToken = response.data.jwtToken;
-            const userRole = response.data.userRole;
+            const userId = response.data.userRole.id;
+            const userRole = response.data.userRole.appRole;
+            const username = response.data.userRole.username;
+            const restaurantId = response.data.restaurant.id;
 
             if (response.status === 200) {
                 toast.success('Log in successful', {
                     position: toast.POSITION.TOP_RIGHT
                 });
 
-                console.log(jwtToken)
-                console.log(userRole)
+                localStorage.setItem('jwtToken', jwtToken);
+                localStorage.setItem('userRole', userRole);
+                localStorage.setItem('userId', userId);
+                localStorage.setItem('username', username);
+                localStorage.setItem('userRestId', restaurantId);
 
                 setlogInfo({})
 
-                // localStorage.setItem('jwtToken', jwtToken);
-                // localStorage.setItem('userRole', userRole);
-
-                // Redirect the user based on their role 
-                // if (userRole === 'RESTOHUB_OWNER') {
-                //     navigate.push('/admin-dashboard');
-                // }if (userRole === 'RESTAURANT_MANAGER') {
-                //     navigate.push('/manager-dashboard');
-                // }if (userRole === 'RESTAURANT_STAFF') {
-                //     navigate.push('/staff-dashboard');
-                // }if (userRole === 'RESTAURANT_WAITER') {
-                //     navigate.push('/waiter-dashboard');
-                // } else{
-                //     navigate.push('/user-dashboard');
-                // }
-            }
+                setTimeout(() => {
+                    redirectToUserDashboard();
+                }, 2000);
+            };
 
         } catch (e) { 
             // Handle authentication errors
