@@ -28,16 +28,16 @@ const App = () => {
             <Routes location={location} key={location.pathname}>
                 <Route element={<ManagerRoute />}>
                     <Route exact path='/managerDashboard' element={<ManagerDashBoard />}/>
-                    <Route exact path='/staffDashboard' element={<StaffDashBoard />}/>
-                    <Route exact path='/staffDashboard/customerOrder' element={<WaiterDashBoard />}/>
+                    {/* <Route exact path='/staffDashboard' element={<StaffDashBoard />}/>
+                    <Route exact path='/customerOrder' element={<WaiterDashBoard />}/> */}
                 </Route>
                 <Route element={<StaffRoute />}>
                     <Route exact path='/staffDashboard' element={<StaffDashBoard />}/>
-                    <Route exact path='/staffDashboard/customerOrder' element={<WaiterDashBoard />}/>
+                    <Route exact path='/customerOrder' element={<WaiterDashBoard />}/>
                 </Route>
                 <Route element={<WaiterRoute />}>
                     <Route exact path='/staffDashboard' element={<StaffDashBoard />}/>
-                    <Route exact path='/staffDashboard/customerOrder' element={<WaiterDashBoard />}/>
+                    <Route exact path='/customerOrder' element={<WaiterDashBoard />}/>
                 </Route>
                 <Route exact path='/' element={<RestaurantSearch />} />
                 <Route exact path='/login' element={<Login />} />

@@ -51,7 +51,7 @@ const StaffDashBoard = () => {
         const fetchData = async () => {
             const [startDate, endDate] = dateRange;
             const params = {
-                restaurantId: restaurantId, // restaurantId is hardcoded for now
+                restaurantId: restaurantId, 
                 startDate: startDate,
                 endDate: endDate
             };

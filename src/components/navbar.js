@@ -46,7 +46,7 @@ function NavbarComponent() {
                           <NavDropdown.Item href='/staffDashboard'>
                             Check-in
                           </NavDropdown.Item>
-                          <NavDropdown.Item href='/staffDashboard/customerOrder'>
+                          <NavDropdown.Item href='/customerOrder'>
                             Customer order
                           </NavDropdown.Item>
                         </NavDropdown>
@@ -67,7 +67,7 @@ function NavbarComponent() {
                       <NavDropdown.Item href='/staffDashboard'>
                         Check-in
                       </NavDropdown.Item>
-                      <NavDropdown.Item href='/staffDashboard/customerOrder'>
+                      <NavDropdown.Item href='/customerOrder'>
                         Customer order
                       </NavDropdown.Item>
                     </NavDropdown>
@@ -89,7 +89,7 @@ function NavbarComponent() {
                           <NavDropdown.Item href='/staffDashboard'>
                             Check-in
                           </NavDropdown.Item>
-                          <NavDropdown.Item href='/staffDashboard/customerOrder'>
+                          <NavDropdown.Item href='/customerOrder'>
                             Customer order
                           </NavDropdown.Item>
                         </NavDropdown>

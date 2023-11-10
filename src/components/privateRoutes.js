@@ -4,25 +4,25 @@ import { getUserRole, getUserId } from '../utils/utils';
 
 const ManagerRoute = () => {
     const userId = getUserId();
-    const roleId = getUserRole();
+    const userRole = getUserRole();
     return (
-        userId && (roleId === 'RESTAURANT_MANAGER') ? <Outlet /> : <Navigate to='/login' />
+        userId && (userRole === 'RESTAURANT_MANAGER') ? <Outlet /> : <Navigate to='/login' />
     )
 }
 
 const StaffRoute = () => {
     const userId = getUserId();
-    const roleId = getUserRole()
+    const userRole = getUserRole()
     return (
-        userId && (roleId === 'RESTAURANT_STAFF') ? <Outlet /> : <Navigate to='/login' />
+        userId && (userRole === "RESTAURANT_STAFF" || userRole === 'RESTAURANT_MANAGER') ? <Outlet /> : <Navigate to='/login' />
     )
 }
 
 const WaiterRoute = () => {
     const userId = getUserId();
-    const roleId = getUserRole()
+    const userRole = getUserRole()
     return (
-        userId && (roleId === 'RESTAURANT_WAITER') ? <Outlet /> : <Navigate to='/login' />
+        userId && (userRole === 'RESTAURANT_WAITER' || userRole === 'RESTAURANT_MANAGER') ? <Outlet /> : <Navigate to='/login' />
     )
 }
 

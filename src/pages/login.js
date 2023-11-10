@@ -86,13 +86,15 @@ const Login = () => {
                 setTimeout(() => {
                     redirectToUserDashboard();
                 }, 2000);
+
+
             };
 
         } catch (e) { 
             // Handle authentication errors
             console.log(e)
             toast.error('Authentication failed. Please Check your credentials', {
-                position: toast.POSITION.TOP_CENTER
+                position: toast.POSITION.TOP_RIGHT
             });
         }
     };
