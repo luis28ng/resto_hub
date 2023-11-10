@@ -50,7 +50,7 @@ const RestaurantSearch = () => {
     const resetModalState = () => {
         setUserInfo({});
         setPartySize('');
-        setSelectedDate('');
+        setSelectedDate(null);
     };
 
     // useEffect(() => {
@@ -182,10 +182,6 @@ const RestaurantSearch = () => {
             // If no match is found, the date is not disabled
             return true;
     };
-    
-    const handleDayChange = (date) => {
-        setSelectedDate(date)
-    };
 
     const handleUserInfoChange = (e) => {
         const { name, value } = e.target;
@@ -201,14 +197,17 @@ const RestaurantSearch = () => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
         // Check if the email is valid
-        if (!emailRegex.test(userInfo.email)) {
+        if (!emailRegex.test(userInfo.emailAddress)) {
             toast.error("Invalid email address", {
                 position: toast.POSITION.TOP_RIGHT
             })
             return;
         };
 
-        var formattedDate = selectedDate.toISOString().slice(0, 19).replace("T", " ");
+        let dateString = selectedDate.toLocaleDateString("en-CA");
+        let timeString = selectedDate.toLocaleTimeString("en-GB")
+        let formattedDate = dateString.concat(" ", timeString);
+        
         const parsedPartySize = parseInt(partySize, 10);
 
         const reservationInfo = {
@@ -312,7 +311,7 @@ const RestaurantSearch = () => {
                                                         selected={selectedDate}
                                                         minTime={new Date().setHours(10, 0)} // 10:00 AM
                                                         maxTime={new Date().setHours(22, 0)} // 10:00 PM
-                                                        onChange={handleDayChange}
+                                                        onChange={(date) => setSelectedDate(date)}
                                                         filterDate={isDateDisabled}
                                                         filterTime={isDateDisabled}
                                                         minDate={new Date()}
@@ -323,7 +322,7 @@ const RestaurantSearch = () => {
                                                 </div>
                                             )}
                                             <br></br>
-                                            {selectedDate && (
+                                            { (partySize && selectedDate) && (
                                                 <div className="form-group">
                                                     <Form.Label>First name</Form.Label>
                                                     <Form.Control
@@ -347,8 +346,8 @@ const RestaurantSearch = () => {
                                                     <Form.Control
                                                         type='text'
                                                         placeholder="Email"
-                                                        name="email"
-                                                        value={userInfo.email}
+                                                        name="emailAddress"
+                                                        value={userInfo.emailAddress}
                                                         onChange={handleUserInfoChange}
                                                         required 
                                                     />
