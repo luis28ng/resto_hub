@@ -79,7 +79,6 @@ const StaffDashBoard = () => {
     ];
       
     const handleRowSelected = (state) => {
-        console.log(reservations)
         setSelectedRows(state.selectedRows.map((row) => row.id));
     };
     
@@ -108,7 +107,7 @@ const StaffDashBoard = () => {
                 setReservations(() => {
                     reservations.filter(res => res.id !== reservationId)
                 });
-                
+
             } else if (!response.data) {
                 toast.error(`No Invalid Reservation ID Provided: ${reservationId}`, {
                     position: toast.POSITION.TOP_RIGHT
