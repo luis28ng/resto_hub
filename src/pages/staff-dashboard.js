@@ -79,17 +79,50 @@ const StaffDashBoard = () => {
     ];
       
     const handleRowSelected = (state) => {
+        console.log(reservations)
         setSelectedRows(state.selectedRows.map((row) => row.id));
     };
     
-    const handleCheckIn = () => {
+    const handleCheckIn = async () => {
 
         if (selectedRows === null || selectedRows.length === 0 || selectedRows === undefined) {
             toast.error('No reservations selected for check-in', {
                 position: toast.POSITION.TOP_RIGHT
             });
+            return;
         }
-        console.log('Check-In ID:', selectedRows);
+
+        let reservationId = selectedRows[0];
+        try {
+            let response = await axios.put('http://restohub-api.us-east-2.elasticbeanstalk.com/api/reservations/checkIn', null, {
+                params: {
+                    reservationId: reservationId
+                }
+            })
+            
+            if (response.status === 200) {
+                toast.success(`Checked in Reservation: ${reservationId}`, {
+                    position: toast.POSITION.TOP_RIGHT
+                });
+                
+                setReservations(() => {
+                    reservations.filter(res => res.id !== reservationId)
+                });
+                
+            } else if (!response.data) {
+                toast.error(`No Invalid Reservation ID Provided: ${reservationId}`, {
+                    position: toast.POSITION.TOP_RIGHT
+                });
+            } else {
+                toast.error(`Unkown server error occurred`, {
+                    position: toast.POSITION.TOP_RIGHT
+                });
+            }
+        } catch (error) {
+            toast.error("Error occurred while submitting reservation", {
+                position: toast.POSITION.TOP_RIGHT
+            });
+        }
     };
     
     return(
@@ -116,7 +149,7 @@ const StaffDashBoard = () => {
                 <Tab eventKey="today" title="Today">
                     <br></br>
                     <Container>
-                        {reservations.length > 0 && (
+                        {reservations && (
                             <Button onClick={handleCheckIn} variant="success">Check-In</Button>
                         )}
                     </Container>
@@ -138,7 +171,7 @@ const StaffDashBoard = () => {
                 <Tab eventKey="thisWeek" title="This week">
                     <br></br>
                     <Container>
-                        {reservations.length > 0 && (
+                        {reservations && (
                             <Button onClick={handleCheckIn} variant="success">Check-In</Button>
                         )}
                     </Container>
