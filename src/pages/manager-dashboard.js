@@ -47,6 +47,7 @@ const ManagerDashBoard = () => {
             restaurantId: restaurantId
         }
 
+        console.log(newUserInfo)
         try {
 
             const response = await axios.post('http://restohub-api.us-east-2.elasticbeanstalk.com/api/user/save-user', newUserInfo, {
@@ -55,14 +56,15 @@ const ManagerDashBoard = () => {
                 }
             });
 
+
             const newUserId = response.data.id;
+            const newUser = response.data.appRole;
 
             if (response.status === 200) {
-                toast.success(`User created successfully. Your new user id is ${newUserId}`, {
+                toast.success(`${newUser} created successfully. Your new user id is ${newUserId}`, {
                     position: toast.POSITION.TOP_RIGHT
                 });
                 resetModalState();
-                // setShowModal(false)
 
             } else {
                 toast.error("Failed to create new user, please try again", {
@@ -70,9 +72,16 @@ const ManagerDashBoard = () => {
                 });
             }
         } catch (e) {
-            toast.error("Error occurred while submitting request", {
-                position: toast.POSITION.TOP_RIGHT
-            });
+            if (e.response && e.response.status === 400) {
+                toast.error("Error: This email already exists", {
+                    position: toast.POSITION.TOP_RIGHT
+                });
+            } else {
+                console.error("Error occurred while submitting request", e);
+                toast.error("Error occurred while submitting request", {
+                    position: toast.POSITION.TOP_RIGHT
+                });
+            }
         }
     };
     
