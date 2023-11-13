@@ -354,6 +354,7 @@ const RestaurantSearch = () => {
                                                         onChange={handleUserInfoChange}
                                                         required 
                                                     />
+                                                    <br></br>
                                                     <ReCAPTCHA
                                                         sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
                                                         onChange={recaptchaClicked}/>
