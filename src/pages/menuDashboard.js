@@ -13,12 +13,21 @@ const Menu = () => {
     const [menuData, setMenuData] = useState([]);
     const [restaurantId, setRestaurantId] = useState("");
     const [showCreateModal, setShowCreateModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [category, setCategory] = useState("");
     const [menuItem, setMenuItem] = useState({
         name: "",
         description: "",
         price: "",
         category: ""
-    })
+    });
+    const [editMenuItem, setEditMenuItem] = useState({
+        id: "",
+        name: "",
+        description: "",
+        price: "",
+        category: ""
+    });
 
     useEffect(() => {
         setRestaurantId(getRestId());
@@ -86,15 +95,32 @@ const Menu = () => {
     };
 
     const resetModalState = () => {
-        setMenuItem({});
+        setMenuItem({
+            name: "",
+            description: "",
+            price: "",
+            category: ""
+        });
         setShowCreateModal(false)
+        setCategory("")
+    };
+
+    const handleCategoryChange = async (e) => {
+        const selectedCategory = e.target.value;
+        setCategory(selectedCategory);
+        
     };
 
     const handleCreate = async (e) => {
         e.preventDefault();
         
         const newMenuItem = {
-            menuItem: menuItem,
+            menuItem: {
+                name: menuItem.name,
+                description: menuItem.description,
+                price: menuItem.price,
+                category: category
+            },
             restaurantId: restaurantId
         }
 
@@ -107,11 +133,11 @@ const Menu = () => {
             
             const itemName = response.data.name
 
-
             if (response.status === 200) {
                 toast.success(`New menu item ${itemName} was successfully created`, {
                     position: toast.POSITION.TOP_RIGHT
                 });
+                
                 resetModalState();
                 getMenu();
 
@@ -127,8 +153,15 @@ const Menu = () => {
         }
     };
 
-    const handleEditButton = async () => {
-
+    const handleEditButton = async (row) => {
+        setEditMenuItem({
+            id: row.id,
+            name: row.name,
+            description: row.description,
+            price: row.price,
+            category: row.category
+        })
+        setShowEditModal(true)
     };
 
     const handleDelete = async (e) => {
@@ -171,6 +204,37 @@ const Menu = () => {
             }
         };
     };
+
+    const handleEdit = async (e) => {
+        e.preventDefault();
+        console.log(editMenuItem)
+        try {
+            const response = await axios.put("http://restohub-api.us-east-2.elasticbeanstalk.com/api/manager/updateMenuItem", editMenuItem, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+
+            const itemName = response.data.name
+
+            if (response.status === 200) {
+                toast.success(`Item ${itemName} was successfully updated`, {
+                    position: toast.POSITION.TOP_RIGHT
+                });
+
+                setShowEditModal(false);
+                getMenu();
+            } else {
+                toast.error(`Failed to update item ${itemName}, please try again`, {
+                    position: toast.POSITION.TOP_RIGHT
+                });
+            }
+        } catch (e) {
+            toast.error("Error occurred while submitting request", {
+                position: toast.POSITION.TOP_RIGHT
+            });
+        }
+    }
 
     return(
         <div>
@@ -220,15 +284,16 @@ const Menu = () => {
                                             required
                                         />
                                         <br></br>
-                                        <Form.Label>Category</Form.Label>
-                                        <Form.Control
-                                            type='text'
-                                            placeholder="Category"
-                                            name="category"
-                                            value={menuItem.category}
-                                            onChange={handleMenuItemChange}
-                                            required
-                                        />
+                                        <Form.Group>
+                                            <Form.Label>Select a category</Form.Label>
+                                                <Form.Select value={category} onChange={handleCategoryChange} required>
+                                                    <option value="" disabled>Select a category</option>
+                                                    <option value="main">main</option>
+                                                    <option value="appetizer">appetizer</option>
+                                                    <option value="drink">drink</option>
+                                                    <option value="dessert">dessert</option>
+                                                </Form.Select>
+                                        </Form.Group>
                                     </div>
                                 </Form.Group>
                             </Modal.Body>
@@ -248,6 +313,62 @@ const Menu = () => {
                     fixedHeader
                     striped
                     />
+                </Container>
+                <Container>
+                    <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
+                        <Form onSubmit={handleEdit}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Edit menut item</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <Form.Group>
+                                    <Form.Label>Item name</Form.Label>
+                                    <Form.Control
+                                        type='text'
+                                        placeholder="Name"
+                                        name="name"
+                                        value={editMenuItem.name}
+                                        onChange={(e) => setEditMenuItem({ ...editMenuItem, name: e.target.value })}
+                                        required
+                                    />
+                                    <Form.Label>Item description</Form.Label>
+                                    <Form.Control
+                                        type='text'
+                                        placeholder="Description"
+                                        name="description"
+                                        value={editMenuItem.description}
+                                        onChange={(e) => setEditMenuItem({ ...editMenuItem, description: e.target.value })}
+                                        required
+                                    />
+                                    <Form.Label>Item price</Form.Label>
+                                    <Form.Control
+                                        type='text'
+                                        placeholder="Price"
+                                        name="price"
+                                        value={editMenuItem.price}
+                                        onChange={(e) => setEditMenuItem({ ...editMenuItem, price: e.target.value })}
+                                        required
+                                    />
+                                    <Form.Label>Item category</Form.Label>
+                                    <Form.Select
+                                        value={editMenuItem.category}
+                                        onChange={(e) => setEditMenuItem({ ...editMenuItem, category: e.target.value })}
+                                    >
+                                        <option value="main">main</option>
+                                        <option value="appetizer">appetizer</option>
+                                        <option value="drink">drink</option>
+                                        <option value="dessert">dessert</option>
+                                    </Form.Select>
+                                </Form.Group>
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Form.Group className="w-100 d-flex justify-content-between">
+                                    <Button variant="success" type="submit">Save</Button>
+                                    <Button variant="danger" onClick={() => { setShowEditModal(false); setEditMenuItem({}); }}>Close</Button>
+                                </Form.Group>
+                            </Modal.Footer>
+                        </Form>
+                    </Modal>
                 </Container>
             </Container>
         </div>
