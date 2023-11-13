@@ -27,7 +27,7 @@ const ManagerDashBoard = () => {
     })
 
     useEffect(() => {
-        setRestaurantId(getRestId);
+        setRestaurantId(getRestId());
         getStaff();
     }, []);
 
@@ -92,6 +92,7 @@ const ManagerDashBoard = () => {
                     position: toast.POSITION.TOP_RIGHT
                 });
                 resetModalState();
+                getStaff();
 
             } else {
                 toast.error("Failed to create new user, please try again", {
@@ -149,7 +150,7 @@ const ManagerDashBoard = () => {
                     position: toast.POSITION.TOP_RIGHT
                 });
             }
-        }
+        };
     };
 
     const handleEditButton = async (row) => {
@@ -220,7 +221,7 @@ const ManagerDashBoard = () => {
                     <Container>
                         <Form className="formclass centered" onSubmit={handleCreate}>
                             <Modal.Header closeButton>
-                                <Modal.Title>Booking Details</Modal.Title>
+                                <Modal.Title>Create a new user</Modal.Title>
                             </Modal.Header>
                             <Modal.Body>
                                 <Form.Group>
@@ -259,7 +260,7 @@ const ManagerDashBoard = () => {
                             <Modal.Footer>
                                 <Form.Group className="w-100 d-flex justify-content-between">
                                     <Button variant="danger" onClick={() => setShowCreateModal(false)}>Close</Button>
-                                    <Button variant="success" type="submit">Confirm Booking</Button>
+                                    <Button variant="success" type="submit">Confirm</Button>
                                 </Form.Group>
                             </Modal.Footer>
                         </Form>
