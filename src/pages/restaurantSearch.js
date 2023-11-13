@@ -1,5 +1,5 @@
 import Navbar from "../components/navbar.js";
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import "bootstrap/dist/css/bootstrap.css";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -9,6 +9,7 @@ import Modal from 'react-bootstrap/Modal';
 import { Row, Col, Button, Form, Container } from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css'; 
+import ReCAPTCHA from "react-google-recaptcha";
 
 const customStyles = {
     rows: {
@@ -46,16 +47,14 @@ const RestaurantSearch = () => {
         lastName: '',
         emailAddress: ''
     })
+    const [captchaClicked, setCaptchaClicked] = useState(false);
 
     const resetModalState = () => {
         setUserInfo({});
         setPartySize('');
         setSelectedDate(null);
+        setCaptchaClicked(false);
     };
-
-    // useEffect(() => {
-    //     getData();
-    // }, []);
 
     const handleZipCodeChange = (e) => {
         console.log('Input Value:', e.target.value);
@@ -93,6 +92,10 @@ const RestaurantSearch = () => {
         setTableTitle(`All restaurants with zip code: ${zip}`);
         console.log('Form submitted:', zip);
     };
+
+    const recaptchaClicked = () => {
+        setCaptchaClicked(true)
+    }
 
     const columns = [
         {name: 'Name', selector: (row, i) => row.name, center: true, sortable: true},
@@ -351,6 +354,9 @@ const RestaurantSearch = () => {
                                                         onChange={handleUserInfoChange}
                                                         required 
                                                     />
+                                                    <ReCAPTCHA
+                                                        sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+                                                        onChange={recaptchaClicked}/>
                                                 </div>
                                             )}
                                     </div>
@@ -359,7 +365,7 @@ const RestaurantSearch = () => {
                             <Modal.Footer>
                                 <Form.Group className="w-100 d-flex justify-content-between">
                                     <Button variant="danger" onClick={() => setShowModal(false)}>Close</Button>
-                                    <Button variant="success" type="submit">Confirm Booking</Button>
+                                    { captchaClicked && (<Button variant="success" type="submit">Confirm Booking</Button>) }
                                 </Form.Group>
                             </Modal.Footer>
                         </Form>
