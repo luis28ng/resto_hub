@@ -8,6 +8,7 @@ import WaiterDashBoard from './pages/customerOrderDashboard.js';
 import StaffDashBoard from './pages/staff-dashboard.js';
 import RestaurantSearch from './pages/restaurantSearch.js'
 import ManagerDashBoard from './pages/manager-dashboard.js';
+import Menu from './pages/menuDashboard.js';
 import { ManagerRoute, StaffRoute, WaiterRoute } from './components/privateRoutes.js';
 import { AnimatePresence } from 'framer-motion';
 import { ToastContainer } from 'react-toastify'
@@ -28,8 +29,8 @@ const App = () => {
             <Routes location={location} key={location.pathname}>
                 <Route element={<ManagerRoute />}>
                     <Route exact path='/managerDashboard' element={<ManagerDashBoard />}/>
-                    {/* <Route exact path='/staffDashboard' element={<StaffDashBoard />}/>
-                    <Route exact path='/customerOrder' element={<WaiterDashBoard />}/> */}
+                    <Route exact path='/menuDashboard' element={<Menu />}/>
+                    {/* <Route exact path='/customerOrder' element={<WaiterDashBoard />}/> */}
                 </Route>
                 <Route element={<StaffRoute />}>
                     <Route exact path='/staffDashboard' element={<StaffDashBoard />}/>

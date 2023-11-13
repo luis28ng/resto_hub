@@ -43,6 +43,9 @@ function NavbarComponent() {
                           <NavDropdown.Item onClick={redirectToUserDashboard}>
                             Your Dashboard
                           </NavDropdown.Item>
+                          <NavDropdown.Item href='/menuDashboard'>
+                            Food menu dashboard
+                          </NavDropdown.Item>
                           <NavDropdown.Item href='/staffDashboard'>
                             Check-in
                           </NavDropdown.Item>
