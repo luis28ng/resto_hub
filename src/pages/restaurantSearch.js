@@ -207,9 +207,7 @@ const RestaurantSearch = () => {
             return;
         };
 
-        let dateString = selectedDate.toLocaleDateString("en-CA");
-        let timeString = selectedDate.toLocaleTimeString("en-GB")
-        let formattedDate = dateString.concat(" ", timeString);
+        let formattedDate = formatDate(selectedDate);
         
         const parsedPartySize = parseInt(partySize, 10);
 
@@ -245,6 +243,16 @@ const RestaurantSearch = () => {
                 position: toast.POSITION.TOP_RIGHT
             });
         }
+    };
+
+    const formatDate = (date) => {
+        let year = date.getFullYear()
+        let month = date.getMonth() + 1
+        let day = date.getDate()
+        let time = date.toLocaleTimeString("en-GB")
+
+        let formattedDate = `${year}-${month}-${day} ${time}`
+        return formattedDate
     };
     
 
