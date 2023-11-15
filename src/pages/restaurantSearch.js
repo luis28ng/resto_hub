@@ -217,17 +217,18 @@ const RestaurantSearch = () => {
             reservationDate: formattedDate,
             restaurantId: selectedRestaurant
         }
-        console.log(reservationInfo)
+        
         try {
             const response = await axios.post('http://restohub-api.us-east-2.elasticbeanstalk.com/api/reservations/create', reservationInfo, {
                 headers: {
                     'Content-Type': 'application/json',
                 }
             });
-            const reservationID = response.data.id
+            
+            const reservationCode = response.data.reservationCode
             // Handle the response as needed
             if (response.status === 200) {
-                toast.success(`Reservation submitted successfully. Your reservation id is ${reservationID}`, {
+                toast.success(`Reservation submitted successfully. Your reservation code is "${reservationCode}"`, {
                     position: toast.POSITION.TOP_RIGHT
                 });
                 resetModalState();
