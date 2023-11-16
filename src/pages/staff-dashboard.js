@@ -48,28 +48,29 @@ const StaffDashBoard = () => {
     }, []);
 
     useEffect(() => {
-        const fetchData = async () => {
-            const [startDate, endDate] = dateRange;
-            const params = {
-                restaurantId: restaurantId, 
-                startDate: startDate,
-                endDate: endDate
-            };
-    
-            try {
-                const response = await axios.get("http://restohub-api.us-east-2.elasticbeanstalk.com/api/reservations/search", {
-                    params: params,
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                });
-                setReservations(response.data);
-            } catch (error) {
-                console.error("Error fetching data: ", error);
-            }
-        };
         fetchData()
     }, [dateRange]);
+
+    const fetchData = async () => {
+        const [startDate, endDate] = dateRange;
+        const params = {
+            restaurantId: restaurantId, 
+            startDate: startDate,
+            endDate: endDate
+        };
+
+        try {
+            const response = await axios.get("http://restohub-api.us-east-2.elasticbeanstalk.com/api/reservations/search", {
+                params: params,
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            setReservations(response.data);
+        } catch (error) {
+            console.error("Error fetching data: ", error);
+        }
+    };
 
     
     const columns = [
@@ -107,6 +108,8 @@ const StaffDashBoard = () => {
                 setReservations(() => {
                     reservations.filter(res => res.id !== reservationId)
                 });
+
+                fetchData()
 
             } else if (!response.data) {
                 toast.error(`No Invalid Reservation ID Provided: ${reservationId}`, {
