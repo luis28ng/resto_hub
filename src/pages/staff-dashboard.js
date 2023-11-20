@@ -1,13 +1,18 @@
-import Navbar from "../components/navbar.js";
 import React, { useEffect, useState } from 'react';
-import "bootstrap/dist/css/bootstrap.css";
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import axios from "axios";
-import { Button, Container, Tab, Tabs } from 'react-bootstrap';
-import DataTable from 'react-data-table-component';
-import { getRestId } from "../utils/utils.js";
 
+import axios from "axios";
+import DataTable from 'react-data-table-component';
+import { toast, ToastContainer } from 'react-toastify';
+import { Button, Container, Tab, Tabs } from 'react-bootstrap';
+
+
+
+import Navbar from "../components/navbar.js";
+import { getRestId } from "../utils/utils.js";
+import CustomerTable from "../components/customerTable.js";
+
+import "bootstrap/dist/css/bootstrap.css";
+import 'react-toastify/dist/ReactToastify.css';
 
 const StaffDashBoard = () => {
     const [activeTab, setActiveTab] = useState('today');
@@ -15,6 +20,7 @@ const StaffDashBoard = () => {
     const [dateRange, setDateRange] = useState([]);
     const [selectedRows, setSelectedRows] = useState([]);
     const [restaurantId, setRestaurantId] = useState('')
+    const [checkedInCustomers, setCheckedInCustomers] = useState([]);
 
     const selectedDateRangeToday = () => {
         console.log("Today tab selected");
@@ -51,10 +57,25 @@ const StaffDashBoard = () => {
         fetchData()
     }, [dateRange]);
 
+    useEffect(() => {
+        if (activeTab === 'checkedInCustomers') {
+            fetchCheckedInCustomers();
+        }
+    }, [activeTab]);
+
+    const fetchCheckedInCustomers = async () => {
+        try {
+            const response = await axios.get('http://restohub-api.us-east-2.elasticbeanstalk.com/api/customers/checkedIn');
+            setCheckedInCustomers(response.data);
+        } catch (error) {
+            console.error('Error fetching checked-in customers:', error);
+        }
+    };
+
     const fetchData = async () => {
         const [startDate, endDate] = dateRange;
         const params = {
-            restaurantId: restaurantId, 
+            restaurantId: restaurantId,
             startDate: startDate,
             endDate: endDate
         };
@@ -72,17 +93,17 @@ const StaffDashBoard = () => {
         }
     };
 
-    
+
     const columns = [
-        {name: 'First Name', selector: (row, i) => row.firstName, center: true, sortable: true},
-        {name: 'Last Name', selector: (row, i) => row.lastName, center: true, sortable: true },
-        {name: 'Reservation', selector: (row, i) => row.reservationDate, center: true, sortable: true },
+        { name: 'First Name', selector: (row, i) => row.firstName, center: true, sortable: true },
+        { name: 'Last Name', selector: (row, i) => row.lastName, center: true, sortable: true },
+        { name: 'Reservation', selector: (row, i) => row.reservationDate, center: true, sortable: true },
     ];
-      
+
     const handleRowSelected = (state) => {
         setSelectedRows(state.selectedRows.map((row) => row.id));
     };
-    
+
     const handleCheckIn = async () => {
 
         if (selectedRows === null || selectedRows.length === 0 || selectedRows === undefined) {
@@ -99,12 +120,12 @@ const StaffDashBoard = () => {
                     reservationId: reservationId
                 }
             })
-            
+
             if (response.status === 200) {
                 toast.success(`Checked in Reservation: ${reservationId}`, {
                     position: toast.POSITION.TOP_RIGHT
                 });
-                
+
                 setReservations(() => {
                     reservations.filter(res => res.id !== reservationId)
                 });
@@ -125,9 +146,10 @@ const StaffDashBoard = () => {
                 position: toast.POSITION.TOP_RIGHT
             });
         }
+        fetchCheckedInCustomers();
     };
-    
-    return(
+
+    return (
         <div>
             <ToastContainer />
             <Navbar />
@@ -135,67 +157,72 @@ const StaffDashBoard = () => {
                 <br></br>
                 <h1>Check-in Dashboard</h1>
                 <Tabs
-                id="controlled-tabs"
-                activeKey={activeTab}
-                className="mb-3"
-                fill
-                justify
-                onSelect={(key) => {
-                    if (key === 'today') {
-                      selectedDateRangeToday();
-                    } else if (key === 'thisWeek') {
-                      selectedDateRangeThisWeek();
-                    }
-                  }}
+                    id="controlled-tabs"
+                    activeKey={activeTab}
+                    className="mb-3"
+                    fill
+                    justify
+                    onSelect={(key) => {
+                        if (key === 'today') {
+                            selectedDateRangeToday();
+                        } else if (key === 'thisWeek') {
+                            selectedDateRangeThisWeek();
+                        }
+                    }}
                 >
-                <Tab eventKey="today" title="Today">
-                    <br></br>
-                    <Container>
-                        {reservations && (
-                            <Button onClick={handleCheckIn} variant="success">Check-In</Button>
-                        )}
-                    </Container>
-                    <br></br>
-                    <Container>
-                        <DataTable
-                        columns={columns}
-                        data={reservations}
-                        fixedHeader
-                        striped
-                        selectableRows
-                        selectableRowsSingle={true}
-                        selectableRowsNoSelectAll
-                        onSelectedRowsChange={handleRowSelected} 
-                        selectableRowsHighlight
+                    <Tab eventKey="today" title="Today">
+                        <br></br>
+                        <Container>
+                            {reservations && (
+                                <Button onClick={handleCheckIn} variant="success">Check-In</Button>
+                            )}
+                        </Container>
+                        <br></br>
+                        <Container>
+                            <DataTable
+                                columns={columns}
+                                data={reservations}
+                                fixedHeader
+                                striped
+                                selectableRows
+                                selectableRowsSingle={true}
+                                selectableRowsNoSelectAll
+                                onSelectedRowsChange={handleRowSelected}
+                                selectableRowsHighlight
+                            />
+                        </Container>
+                    </Tab>
+                    <Tab eventKey="thisWeek" title="This week">
+                        <br></br>
+                        <Container>
+                            {reservations && (
+                                <Button onClick={handleCheckIn} variant="success">Check-In</Button>
+                            )}
+                        </Container>
+                        <br></br>
+                        <Container>
+                            <DataTable
+                                columns={columns}
+                                data={reservations}
+                                fixedHeader
+                                striped
+                                selectableRows
+                                selectableRowsSingle={true}
+                                selectableRowsNoSelectAll
+                                onSelectedRowsChange={handleRowSelected}
+                                selectableRowsHighlight
+                            />
+                        </Container>
+                        <br></br>
+                        <CustomerTable
+                            customers={checkedInCustomers}
+                            onCustomerSelected={handleCustomerSelected}
                         />
-                    </Container>
-                </Tab>
-                <Tab eventKey="thisWeek" title="This week">
-                    <br></br>
-                    <Container>
-                        {reservations && (
-                            <Button onClick={handleCheckIn} variant="success">Check-In</Button>
-                        )}
-                    </Container>
-                    <br></br>
-                    <Container>
-                        <DataTable
-                        columns={columns}
-                        data={reservations}
-                        fixedHeader
-                        striped
-                        selectableRows
-                        selectableRowsSingle={true}
-                        selectableRowsNoSelectAll
-                        onSelectedRowsChange={handleRowSelected} 
-                        selectableRowsHighlight
-                        />
-                    </Container>
-                </Tab>
+                    </Tab>
                 </Tabs>
             </Container>
         </div>
     );
-}  
+}
 
 export default StaffDashBoard;
