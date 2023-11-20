@@ -28,4 +28,3 @@ const WaiterRoute = () => {
 
 export { ManagerRoute, StaffRoute, WaiterRoute }
 
-
