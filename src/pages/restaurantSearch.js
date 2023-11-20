@@ -8,7 +8,7 @@ import DataTable from 'react-data-table-component';
 import Modal from 'react-bootstrap/Modal';
 import { Row, Col, Button, Form, Container } from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css'; 
+import 'react-datepicker/dist/react-datepicker.css';
 import ReCAPTCHA from "react-google-recaptcha";
 
 const customStyles = {
@@ -25,11 +25,11 @@ const customStyles = {
     },
     cells: {
         style: {
-            paddingLeft: '8px', 
+            paddingLeft: '8px',
             paddingRight: '8px'
         },
     },
-  };
+};
 
 
 const RestaurantSearch = () => {
@@ -64,7 +64,7 @@ const RestaurantSearch = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (zip === '' || zip === null || !zip || zip.length !== 5 ) {
+        if (zip === '' || zip === null || !zip || zip.length !== 5) {
             toast.error('You must input a valid zip code!', {
                 position: toast.POSITION.TOP_RIGHT
             });
@@ -88,7 +88,7 @@ const RestaurantSearch = () => {
             toast.error('Failed to fetch restaurant data. Please try again later.', {
                 position: toast.POSITION.TOP_RIGHT
             });
-        }; 
+        };
         setTableTitle(`All restaurants with zip code: ${zip}`);
         console.log('Form submitted:', zip);
     };
@@ -98,9 +98,9 @@ const RestaurantSearch = () => {
     }
 
     const columns = [
-        {name: 'Name', selector: (row, i) => row.name, center: true, sortable: true},
-        {name: 'Address', selector: (row, i) => row.streetAddress1, center: true, sortable: true },
-        {name: 'Zip code', selector: (row, i) => row.zipCode, center: true, sortable: true },
+        { name: 'Name', selector: (row, i) => row.name, center: true, sortable: true },
+        { name: 'Address', selector: (row, i) => row.streetAddress1, center: true, sortable: true },
+        { name: 'Zip code', selector: (row, i) => row.zipCode, center: true, sortable: true },
     ];
 
     const ExpandableRowComponent = ({ data }) => {
@@ -138,7 +138,7 @@ const RestaurantSearch = () => {
             </>
         );
     };
-    
+
     const handlePartySizeChange = async (e) => {
         const selectedPartySize = e.target.value;
         setPartySize(selectedPartySize);
@@ -159,7 +159,7 @@ const RestaurantSearch = () => {
                 const unavailableSlots = response.data.map((reservation) => {
                     const reservationDate = new Date(reservation.reservationDate);
                     return reservationDate;
-                  });
+                });
 
                 setUnavailableSlots(unavailableSlots);
 
@@ -168,8 +168,8 @@ const RestaurantSearch = () => {
             }
         }
     };
-      
-      
+
+
     const isDateDisabled = (date) => {
         // Check if the date is in the list of disabled dates and times
         for (const reservedDate of unavailableSlots) {
@@ -178,19 +178,19 @@ const RestaurantSearch = () => {
                 date.getDate() === reservedDate.getDate() &&
                 date.getHours() === reservedDate.getHours() &&
                 date.getMinutes() === reservedDate.getMinutes()) {
-                    // If both date and time match, it's disabled
-                    return false;
-                };
-            }
-            // If no match is found, the date is not disabled
-            return true;
+                // If both date and time match, it's disabled
+                return false;
+            };
+        }
+        // If no match is found, the date is not disabled
+        return true;
     };
 
     const handleUserInfoChange = (e) => {
         const { name, value } = e.target;
         setUserInfo((prevData) => ({
-        ...prevData,
-        [name]: value,
+            ...prevData,
+            [name]: value,
         }));
     };
 
@@ -208,7 +208,7 @@ const RestaurantSearch = () => {
         };
 
         let formattedDate = formatDate(selectedDate);
-        
+
         const parsedPartySize = parseInt(partySize, 10);
 
         const reservationInfo = {
@@ -217,14 +217,14 @@ const RestaurantSearch = () => {
             reservationDate: formattedDate,
             restaurantId: selectedRestaurant
         }
-        
+
         try {
             const response = await axios.post('http://restohub-api.us-east-2.elasticbeanstalk.com/api/reservations/create', reservationInfo, {
                 headers: {
                     'Content-Type': 'application/json',
                 }
             });
-            
+
             const reservationCode = response.data.reservationCode
             // Handle the response as needed
             if (response.status === 200) {
@@ -255,36 +255,36 @@ const RestaurantSearch = () => {
         let formattedDate = `${year}-${month}-${day} ${time}`
         return formattedDate
     };
-    
 
-    return(
+
+    return (
         <div>
             <div>
-            <Navbar />
-            <ToastContainer />
-            <Container className="form-container">
-                <Form className="formclass centered" onSubmit={handleSubmit}>
-                    <h1>Enter zip code:</h1>
-                    <Form.Group className="mb-3" controlId="formZip">
-                        <Form.Label></Form.Label>
-                        <Form.Control
-                        type='text'
-                        placeholder="Zip Code"
-                        name="zipCode" 
-                        value={zip}
-                        onChange={handleZipCodeChange}
-                        />
-                    </Form.Group>
-                    <Form.Group className="d-grid gap-2">
-                    <Button className="mb-5" type="submit" variant="primary" size="lg">
-                        Enter
-                    </Button>
-                    </Form.Group>
-                </Form>
-            </Container>
+                <Navbar />
+                <ToastContainer />
+                <Container className="form-container">
+                    <Form className="formclass centered" onSubmit={handleSubmit}>
+                        <h1>Enter zip code:</h1>
+                        <Form.Group className="mb-3" controlId="formZip">
+                            <Form.Label></Form.Label>
+                            <Form.Control
+                                type='text'
+                                placeholder="Zip Code"
+                                name="zipCode"
+                                value={zip}
+                                onChange={handleZipCodeChange}
+                            />
+                        </Form.Group>
+                        <Form.Group className="d-grid gap-2">
+                            <Button className="mb-5" type="submit" variant="primary" size="lg">
+                                Enter
+                            </Button>
+                        </Form.Group>
+                    </Form>
+                </Container>
             </div>
             <div>
-                <DataTable 
+                <DataTable
                     title={tableTitle}
                     columns={columns}
                     data={restaurants}
@@ -295,94 +295,94 @@ const RestaurantSearch = () => {
                     expandableRowsComponent={ExpandableRowComponent}
                 />
             </div>
-                <Modal show={showModal} onHide={() => {setShowModal(false); resetModalState();}}>
-                    <Container>
-                        <Form className="formclass centered" onSubmit={handleBooking}>
-                            <Modal.Header closeButton>
-                                <Modal.Title>Booking Details</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body>
-                                <Form.Group>
-                                    <div className="form-group">
-                                        <Form.Label>Select your party size:</Form.Label>
-                                        <Form.Select value={partySize} onChange={handlePartySizeChange}>
-                                            <option value="" disabled>Select the number of people</option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                        </Form.Select>
-                                        <br></br>
-                                            {partySize && (
-                                                <div className="form-group">
-                                                    <Form.Label>Select Date and Time:</Form.Label>
-                                                    <p></p>
-                                                    <DatePicker
-                                                        placeholderText="Click to select a date"
-                                                        showIcon
-                                                        selected={selectedDate}
-                                                        minTime={new Date().setHours(10, 0)} // 10:00 AM
-                                                        maxTime={new Date().setHours(22, 0)} // 10:00 PM
-                                                        onChange={(date) => setSelectedDate(date)}
-                                                        filterDate={isDateDisabled}
-                                                        filterTime={isDateDisabled}
-                                                        minDate={new Date()}
-                                                        showTimeSelect
-                                                        dateFormat="Pp"
-                                                        timeIntervals={60}
-                                                    />
-                                                </div>
-                                            )}
+            <Modal show={showModal} onHide={() => { setShowModal(false); resetModalState(); }}>
+                <Container>
+                    <Form className="formclass centered" onSubmit={handleBooking}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Booking Details</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <Form.Group>
+                                <div className="form-group">
+                                    <Form.Label>Select your party size:</Form.Label>
+                                    <Form.Select value={partySize} onChange={handlePartySizeChange}>
+                                        <option value="" disabled>Select the number of people</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                    </Form.Select>
+                                    <br></br>
+                                    {partySize && (
+                                        <div className="form-group">
+                                            <Form.Label>Select Date and Time:</Form.Label>
+                                            <p></p>
+                                            <DatePicker
+                                                placeholderText="Click to select a date"
+                                                showIcon
+                                                selected={selectedDate}
+                                                minTime={new Date().setHours(10, 0)} // 10:00 AM
+                                                maxTime={new Date().setHours(22, 0)} // 10:00 PM
+                                                onChange={(date) => setSelectedDate(date)}
+                                                filterDate={isDateDisabled}
+                                                filterTime={isDateDisabled}
+                                                minDate={new Date()}
+                                                showTimeSelect
+                                                dateFormat="Pp"
+                                                timeIntervals={60}
+                                            />
+                                        </div>
+                                    )}
+                                    <br></br>
+                                    {(partySize && selectedDate) && (
+                                        <div className="form-group">
+                                            <Form.Label>First name</Form.Label>
+                                            <Form.Control
+                                                type='text'
+                                                placeholder="First Name"
+                                                name="firstName"
+                                                value={userInfo.firstName}
+                                                onChange={handleUserInfoChange}
+                                                required
+                                            />
+                                            <Form.Label>Last name</Form.Label>
+                                            <Form.Control
+                                                type='text'
+                                                placeholder="Last Name"
+                                                name="lastName"
+                                                value={userInfo.lastName}
+                                                onChange={handleUserInfoChange}
+                                                required
+                                            />
+                                            <Form.Label>Email</Form.Label>
+                                            <Form.Control
+                                                type='text'
+                                                placeholder="Email"
+                                                name="emailAddress"
+                                                value={userInfo.emailAddress}
+                                                onChange={handleUserInfoChange}
+                                                required
+                                            />
                                             <br></br>
-                                            { (partySize && selectedDate) && (
-                                                <div className="form-group">
-                                                    <Form.Label>First name</Form.Label>
-                                                    <Form.Control
-                                                        type='text'
-                                                        placeholder="First Name"
-                                                        name="firstName"
-                                                        value={userInfo.firstName}
-                                                        onChange={handleUserInfoChange}
-                                                        required
-                                                    />
-                                                    <Form.Label>Last name</Form.Label>
-                                                    <Form.Control
-                                                        type='text'
-                                                        placeholder="Last Name"
-                                                        name="lastName"
-                                                        value={userInfo.lastName}
-                                                        onChange={handleUserInfoChange}
-                                                        required 
-                                                    />
-                                                    <Form.Label>Email</Form.Label>
-                                                    <Form.Control
-                                                        type='text'
-                                                        placeholder="Email"
-                                                        name="emailAddress"
-                                                        value={userInfo.emailAddress}
-                                                        onChange={handleUserInfoChange}
-                                                        required 
-                                                    />
-                                                    <br></br>
-                                                    <ReCAPTCHA
-                                                        sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
-                                                        onChange={recaptchaClicked}/>
-                                                </div>
-                                            )}
-                                    </div>
-                                </Form.Group>
-                            </Modal.Body>
-                            <Modal.Footer>
-                                <Form.Group className="w-100 d-flex justify-content-between">
-                                    <Button variant="danger" onClick={() => setShowModal(false)}>Close</Button>
-                                    { captchaClicked && (<Button variant="success" type="submit">Confirm Booking</Button>) }
-                                </Form.Group>
-                            </Modal.Footer>
-                        </Form>
-                    </Container>
-                </Modal>
+                                            <ReCAPTCHA
+                                                sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI"
+                                                onChange={recaptchaClicked} />
+                                        </div>
+                                    )}
+                                </div>
+                            </Form.Group>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Form.Group className="w-100 d-flex justify-content-between">
+                                <Button variant="danger" onClick={() => setShowModal(false)}>Close</Button>
+                                {captchaClicked && (<Button variant="success" type="submit">Confirm Booking</Button>)}
+                            </Form.Group>
+                        </Modal.Footer>
+                    </Form>
+                </Container>
+            </Modal>
         </div>
     );
-}  
+}
 
 export default RestaurantSearch;
