@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from 'react';
-
-import axios from "axios";
-import DataTable from 'react-data-table-component';
-import { toast, ToastContainer } from 'react-toastify';
-import { Button, Container, Tab, Tabs } from 'react-bootstrap';
-
-
-
 import Navbar from "../components/navbar.js";
-import { getRestId } from "../utils/utils.js";
-import CustomerTable from "../components/customerTable.js";
-
+import React, { useEffect, useState, useCallback } from 'react';
 import "bootstrap/dist/css/bootstrap.css";
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import axios from "axios";
+import { Button, Container, Tab, Tabs } from 'react-bootstrap';
+import DataTable from 'react-data-table-component';
+import { getRestId } from "../utils/utils.js";
+import ExpandableRowComponent from "../components/ExpandableRowComponent";
+
+
+
+const baseURL = 'http://restohub-api.us-east-2.elasticbeanstalk.com/api';
 
 const StaffDashBoard = () => {
     const [activeTab, setActiveTab] = useState('today');
@@ -21,6 +20,7 @@ const StaffDashBoard = () => {
     const [selectedRows, setSelectedRows] = useState([]);
     const [restaurantId, setRestaurantId] = useState('')
     const [checkedInCustomers, setCheckedInCustomers] = useState([]);
+
 
     const selectedDateRangeToday = () => {
         console.log("Today tab selected");
@@ -48,31 +48,22 @@ const StaffDashBoard = () => {
         setActiveTab('thisWeek');
     };
 
-    useEffect(() => {
-        selectedDateRangeToday(); // Set the active tab and date range for "today" tab
-        setRestaurantId(getRestId);
-    }, []);
-
-    useEffect(() => {
-        fetchData()
-    }, [dateRange]);
-
-    useEffect(() => {
-        if (activeTab === 'checkedInCustomers') {
-            fetchCheckedInCustomers();
-        }
-    }, [activeTab]);
 
     const fetchCheckedInCustomers = async () => {
+        console.log("Checked-in tab selected");
         try {
-            const response = await axios.get('http://restohub-api.us-east-2.elasticbeanstalk.com/api/customers/checkedIn');
+            const response = await axios.get(`${baseURL}/reservations/getReservedTimes`)
             setCheckedInCustomers(response.data);
+            setActiveTab('checkedInCustomer');
         } catch (error) {
             console.error('Error fetching checked-in customers:', error);
+            setCheckedInCustomers([]); // Set to an empty array in case of an error
+            setActiveTab('checkedInCustomer');
         }
+
     };
 
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         const [startDate, endDate] = dateRange;
         const params = {
             restaurantId: restaurantId,
@@ -81,7 +72,7 @@ const StaffDashBoard = () => {
         };
 
         try {
-            const response = await axios.get("http://restohub-api.us-east-2.elasticbeanstalk.com/api/reservations/search", {
+            const response = await axios.get(`${baseURL}/reservations/search`, {
                 params: params,
                 headers: {
                     'Content-Type': 'application/json',
@@ -91,7 +82,26 @@ const StaffDashBoard = () => {
         } catch (error) {
             console.error("Error fetching data: ", error);
         }
-    };
+    }, [dateRange, restaurantId]);
+
+    useEffect(() => {
+        selectedDateRangeToday(); // Set the active tab and date range for "today" tab
+        setRestaurantId(getRestId);
+    }, []);
+
+    useEffect(() => {
+        fetchData()
+    }, [dateRange, fetchData]);
+
+    useEffect(() => {
+        const fetchDataAndCheckedIn = async () => {
+            if (activeTab === 'checkedInCustomer') {
+                await fetchCheckedInCustomers();
+            }
+        };
+
+        fetchDataAndCheckedIn();
+    }, [activeTab]);
 
 
     const columns = [
@@ -105,7 +115,6 @@ const StaffDashBoard = () => {
     };
 
     const handleCheckIn = async () => {
-
         if (selectedRows === null || selectedRows.length === 0 || selectedRows === undefined) {
             toast.error('No reservations selected for check-in', {
                 position: toast.POSITION.TOP_RIGHT
@@ -115,29 +124,29 @@ const StaffDashBoard = () => {
 
         let reservationId = selectedRows[0];
         try {
-            let response = await axios.put('http://restohub-api.us-east-2.elasticbeanstalk.com/api/reservations/checkIn', null, {
+            let response = await axios.put(`${baseURL}/reservations/checkIn`, null, {
                 params: {
                     reservationId: reservationId
                 }
-            })
+            });
 
             if (response.status === 200) {
                 toast.success(`Checked in Reservation: ${reservationId}`, {
                     position: toast.POSITION.TOP_RIGHT
                 });
 
-                setReservations(() => {
-                    reservations.filter(res => res.id !== reservationId)
-                });
+                setReservations(prevReservations => (
+                    prevReservations.filter(res => res.id !== reservationId)
+                ));
 
-                fetchData()
+                fetchData(); // Use the updated state here
 
             } else if (!response.data) {
                 toast.error(`No Invalid Reservation ID Provided: ${reservationId}`, {
                     position: toast.POSITION.TOP_RIGHT
                 });
             } else {
-                toast.error(`Unkown server error occurred`, {
+                toast.error(`Unknown server error occurred`, {
                     position: toast.POSITION.TOP_RIGHT
                 });
             }
@@ -146,7 +155,6 @@ const StaffDashBoard = () => {
                 position: toast.POSITION.TOP_RIGHT
             });
         }
-        fetchCheckedInCustomers();
     };
 
     return (
@@ -167,6 +175,9 @@ const StaffDashBoard = () => {
                             selectedDateRangeToday();
                         } else if (key === 'thisWeek') {
                             selectedDateRangeThisWeek();
+                        } else if (key === 'checkedInCustomer') {
+
+                            fetchCheckedInCustomers();
                         }
                     }}
                 >
@@ -213,11 +224,23 @@ const StaffDashBoard = () => {
                                 selectableRowsHighlight
                             />
                         </Container>
+                    </Tab>
+                    <Tab eventKey="checkedInCustomer" title="Checked-In Customer">
                         <br></br>
-                        <CustomerTable
-                            customers={checkedInCustomers}
-                            onCustomerSelected={handleCustomerSelected}
-                        />
+                        <Container>
+                            {checkedInCustomers && checkedInCustomers.length > 0 ? (
+                                <DataTable
+                                    columns={columns}
+                                    data={checkedInCustomers}
+                                    fixedHeader
+                                    striped
+                                    expandableRows
+                                    expandableRowsComponent={ExpandableRowComponent}
+                                />
+                            ) : (
+                                <p>No checked-in customers</p>
+                            )}
+                        </Container>
                     </Tab>
                 </Tabs>
             </Container>
