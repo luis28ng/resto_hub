@@ -8,6 +8,7 @@ import Button from 'react-bootstrap/Button';
 
 import Navbar from "../components/navbar.js";
 import { login } from '../services/authService';
+
 import { redirectToUserDashboard } from '../utils/utils.js';
 
 import "bootstrap/dist/css/bootstrap.css";
@@ -45,10 +46,15 @@ const Login = () => {
             });
             return;
         }
+
         const { success, data, error } = await login(email, password);
+
+
+        console.log('Login response:', { success, data, error }); // Add this line for debugging
 
         if (success) {
             const { jwtToken, userRole, restaurant } = data;
+            console.log('User data:', { jwtToken, userRole, restaurant }); // Add this line for debugging
 
             toast.success('Login successful', { position: toast.POSITION.TOP_RIGHT });
 
@@ -62,7 +68,6 @@ const Login = () => {
                 email: '',
                 password: '',
             });
-
 
             setTimeout(() => {
                 redirectToUserDashboard();
