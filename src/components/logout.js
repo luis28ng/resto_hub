@@ -1,37 +1,55 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Nav } from 'react-bootstrap';
 import { toast } from 'react-toastify';
+import Spinner from './common/Spinner';
 
 const LogoutButton = () => {
-  const logout = () => {
-    console.log('Logout function called');
+    const [isLoading, setIsLoading] = useState(false);
 
-    localStorage.removeItem('userId');
-    localStorage.removeItem('username');
-    localStorage.removeItem('jwtToken');
-    localStorage.removeItem('userRole');
-    localStorage.removeItem('userRestId')
+    const logout = async () => {
+        setIsLoading(true);
 
-    toast.success('Logged out successfully', {
-      position: toast.POSITION.TOP_RIGHT,
-      onClose: () => {
-        console.log('Toast closed'); // Add this line
-      }
-    });
-    
-    // Redirect the user to the login page
-    setTimeout(() => {
-      window.location.href = '/';
-  }, 2000);
+        try {
+            // Simulating asynchronous logout logic
+            await new Promise(resolve => setTimeout(resolve, 500));
 
-  
-  };
-  
-  return (
-    <Nav>
-        <Nav.Link on onClick={logout}>Logout</Nav.Link>
-    </Nav>
-  );
+            // Remove local storage items
+            localStorage.removeItem('userId');
+            localStorage.removeItem('username');
+            localStorage.removeItem('jwtToken');
+            localStorage.removeItem('userRole');
+            localStorage.removeItem('userRestId');
+
+
+
+            // Redirect the user to the login page
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 2000);
+
+            toast.success('Logged out successfully', {
+                position: toast.POSITION.TOP_RIGHT,
+
+            });
+        } catch (error) {
+            console.error('Logout error:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <div>
+            <Nav>
+                <Nav.Link onClick={logout}>Logout</Nav.Link>
+            </Nav>
+            {isLoading && (
+                <div className="overlay">
+                    <Spinner />
+                </div>
+            )}
+        </div>
+    );
 };
 
 export default LogoutButton;
