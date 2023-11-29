@@ -262,7 +262,7 @@ const RestaurantSearch = () => {
             <div>
                 <Navbar />
                 <ToastContainer />
-                <Container className="form-container">
+                <Container className="form-container" >
                     <Form className="formclass centered" onSubmit={handleSubmit}>
                         <h1>Enter zip code:</h1>
                         <Form.Group className="mb-3" controlId="formZip">
@@ -284,16 +284,18 @@ const RestaurantSearch = () => {
                 </Container>
             </div>
             <div>
-                <DataTable
-                    title={tableTitle}
-                    columns={columns}
-                    data={restaurants}
-                    fixedHeader
-                    customStyles={customStyles}
-                    striped
-                    expandableRows
-                    expandableRowsComponent={ExpandableRowComponent}
-                />
+                <Container style={{marginBottom: '100px'}}> 
+                    <DataTable
+                        title={tableTitle}
+                        columns={columns}
+                        data={restaurants}
+                        fixedHeader
+                        customStyles={customStyles}
+                        striped
+                        expandableRows
+                        expandableRowsComponent={ExpandableRowComponent}
+                    />
+                </Container>
             </div>
             <Modal show={showModal} onHide={() => { setShowModal(false); resetModalState(); }}>
                 <Container>

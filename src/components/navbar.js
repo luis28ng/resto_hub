@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Navbar, Container, Nav, NavDropdown } from 'react-bootstrap';
+import { Navbar, Container, Nav, NavDropdown, Image } from 'react-bootstrap';
 import { getUserId, getUserRole, redirectToUserDashboard, getUsername } from '../utils/utils';
 import LogoutButton from './logout';
 import { ToastContainer } from 'react-toastify';
+import Logo from '../img/RestoHub-Logo.png'
 
 function NavbarComponent() {
   const [username, setUsername] = useState('');
@@ -21,7 +22,9 @@ function NavbarComponent() {
       <Navbar bg="dark" variant="dark" sticky="top">
         <Container>
           <ToastContainer />
-          <Navbar.Brand href="/">Navbar Logo</Navbar.Brand>
+          <Navbar.Brand href="/">
+            <Image src={Logo} alt="Logo" width="80" height="40"/>
+          </Navbar.Brand>
           <Nav className="me-auto">
             <Nav.Link href="/">Home</Nav.Link>
           </Nav>
