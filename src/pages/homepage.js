@@ -1,10 +1,7 @@
-import Navbar from "../components/navbar.js";
-
-
 const homepage = () => {
     return(
         <div>
-            <Navbar />
+            {/* <Navbar /> */}
             <h1>HomePage</h1>
         </div>
     );

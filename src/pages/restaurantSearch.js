@@ -1,4 +1,3 @@
-import Navbar from "../components/navbar.js";
 import React, { useState } from 'react';
 import "bootstrap/dist/css/bootstrap.css";
 import { toast, ToastContainer } from 'react-toastify';
@@ -6,10 +5,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
 import DataTable from 'react-data-table-component';
 import Modal from 'react-bootstrap/Modal';
-import { Row, Col, Button, Form, Container } from 'react-bootstrap';
+import { Row, Col, Button, Form, Container, Card } from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import ReCAPTCHA from "react-google-recaptcha";
+import HomePageCarousel from '../components/HomePageCarousel';
 
 const customStyles = {
     rows: {
@@ -36,7 +36,7 @@ const RestaurantSearch = () => {
 
     const [zip, setZip] = useState('');
     const [restaurants, setRestaurants] = useState([]);
-    const [tableTitle, setTableTitle] = useState('All restaurants with zip code:');
+    const [tableTitle, setTableTitle] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [partySize, setPartySize] = useState('');
     const [selectedRestaurant, setSelectedRestaurant] = useState('');
@@ -260,41 +260,49 @@ const RestaurantSearch = () => {
     return (
         <div>
             <div>
-                <Navbar />
                 <ToastContainer />
-                <Container className="form-container" >
-                    <Form className="formclass centered" onSubmit={handleSubmit}>
-                        <h1>Enter zip code:</h1>
-                        <Form.Group className="mb-3" controlId="formZip">
-                            <Form.Label></Form.Label>
-                            <Form.Control
-                                type='text'
-                                placeholder="Zip Code"
-                                name="zipCode"
-                                value={zip}
-                                onChange={handleZipCodeChange}
-                            />
-                        </Form.Group>
-                        <Form.Group className="d-grid gap-2">
-                            <Button className="mb-5" type="submit" variant="primary" size="lg">
-                                Enter
-                            </Button>
-                        </Form.Group>
-                    </Form>
+                <HomePageCarousel />
+                <Container className='cardContainer'>
+                    <Card border="primary">
+                        <Card.Body>
+                            <Form className="formclass centered" onSubmit={handleSubmit}>
+                                <h1 style={{textAlign: 'center'}}>Enter Zip Code</h1>
+                                <Form.Group className="mb-3" controlId="formZip">
+                                    <Form.Label></Form.Label>
+                                    <Form.Control
+                                        type='text'
+                                        placeholder="Zip Code"
+                                        name="zipCode"
+                                        value={zip}
+                                        onChange={handleZipCodeChange}
+                                    />
+                                </Form.Group>
+                                <Form.Group className="d-grid gap-2">
+                                    <Button className="mb-5" type="submit" variant="primary" size="lg">
+                                        Enter
+                                    </Button>
+                                </Form.Group>
+                            </Form>
+
+                        </Card.Body>
+                    </Card>
                 </Container>
             </div>
             <div>
                 <Container style={{marginBottom: '100px'}}> 
-                    <DataTable
-                        title={tableTitle}
-                        columns={columns}
-                        data={restaurants}
-                        fixedHeader
-                        customStyles={customStyles}
-                        striped
-                        expandableRows
-                        expandableRowsComponent={ExpandableRowComponent}
-                    />
+                    { (restaurants && restaurants.length != 0) &&
+                        <DataTable
+                            title={tableTitle}
+                            columns={columns}
+                            data={restaurants}
+                            fixedHeader
+                            customStyles={customStyles}
+                            striped
+                            expandableRows
+                            expandableRowsComponent={ExpandableRowComponent}
+                        />
+                    }
+                    
                 </Container>
             </div>
             <Modal show={showModal} onHide={() => { setShowModal(false); resetModalState(); }}>

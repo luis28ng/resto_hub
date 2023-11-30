@@ -1,5 +1,4 @@
 import { Button, Container, Form, Modal } from "react-bootstrap";
-import Navbar from "../components/navbar.js";
 import { useEffect, useState } from "react";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -238,7 +237,6 @@ const Menu = () => {
 
     return(
         <div>
-            <Navbar />
             <ToastContainer />
             <Container>
                 <h1>Menu dashboard</h1>

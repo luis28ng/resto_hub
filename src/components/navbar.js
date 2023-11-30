@@ -3,7 +3,7 @@ import { Navbar, Container, Nav, NavDropdown, Image } from 'react-bootstrap';
 import { getUserId, getUserRole, redirectToUserDashboard, getUsername } from '../utils/utils';
 import LogoutButton from './logout';
 import { ToastContainer } from 'react-toastify';
-import Logo from '../img/RestoHub-Logo.png'
+import Logo from '../img/logo-1701283916975.png'
 
 function NavbarComponent() {
   const [username, setUsername] = useState('');
@@ -19,14 +19,14 @@ function NavbarComponent() {
 
   return (
     <>
-      <Navbar bg="dark" variant="dark" sticky="top">
+      <Navbar collapseOnSelect bg="dark" variant="dark" sticky="top">
         <Container>
           <ToastContainer />
           <Navbar.Brand href="/">
-            <Image src={Logo} alt="Logo" width="80" height="40"/>
+            <Image src={Logo} alt="Logo" width="125em" />
           </Navbar.Brand>
           <Nav className="me-auto">
-            <Nav.Link href="/">Home</Nav.Link>
+            {/* removed redundant Home link */}
           </Nav>
           <Nav>
           {

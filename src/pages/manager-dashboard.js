@@ -1,4 +1,3 @@
-import Navbar from "../components/navbar.js";
 import { getRestId } from "../utils/utils.js";
 import axios from "axios";
 import React, { useEffect, useState } from 'react';
@@ -212,7 +211,6 @@ const ManagerDashBoard = () => {
 
     return(
         <div>
-            <Navbar />
             <ToastContainer />
             <Container>
                 <h1>Manager Dashboard</h1>

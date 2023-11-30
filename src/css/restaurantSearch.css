@@ -4,3 +4,8 @@
     border: 2px solid rgb(0, 0, 0); /* Add a 2px solid blue border around the container */
     padding: 20px; /* Add padding inside the container if desired */
 }
+
+.cardContainer {
+    max-width: 400px; /* Set the maximum width for the form */
+    padding: 20px; /* Add padding inside the container if desired */
+}

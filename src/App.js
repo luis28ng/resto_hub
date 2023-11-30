@@ -18,13 +18,17 @@ import 'react-toastify/dist/ReactToastify.css';
 import './index.css';
 import '../src/css/restaurantSearch.css'
 import '../src/css/login.css'
+import NavbarComponent from './components/navbar.js';
+import Footer from './components/Footer.js';
 
 
 const App = () => {
     const location = useLocation();
 
     return (
-        <AnimatePresence mode='wait'>
+        <>
+            <NavbarComponent/>
+            <AnimatePresence mode='wait'>
             <ToastContainer />
             <Routes location={location} key={location.pathname}>
                 <Route element={<ManagerRoute />}>
@@ -44,7 +48,10 @@ const App = () => {
                 <Route exact path='/login' element={<Login />} />
                 <Route exact path='*' element={<NotFound />} />
             </Routes>
-        </AnimatePresence>
+            </AnimatePresence>
+            <Footer />
+        </>
+        
     )
 }
 
