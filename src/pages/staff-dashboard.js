@@ -1,4 +1,3 @@
-import Navbar from "../components/navbar.js";
 import React, { useEffect, useState, useCallback } from 'react';
 import "bootstrap/dist/css/bootstrap.css";
 import { toast, ToastContainer } from 'react-toastify';
@@ -160,7 +159,6 @@ const StaffDashBoard = () => {
     return (
         <div>
             <ToastContainer />
-            <Navbar />
             <Container>
                 <br></br>
                 <h1>Check-in Dashboard</h1>

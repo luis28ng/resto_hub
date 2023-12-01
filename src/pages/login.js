@@ -6,7 +6,6 @@ import { toast, ToastContainer } from 'react-toastify';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
-import Navbar from "../components/navbar.js";
 import { login } from '../services/authService';
 
 import { redirectToUserDashboard } from '../utils/utils.js';
@@ -82,7 +81,6 @@ const Login = () => {
 
     return (
         <div>
-            <Navbar />
             <ToastContainer />
             <Container className="form-container">
                 <Form className="formclass centered" onSubmit={handleSubmit}>
