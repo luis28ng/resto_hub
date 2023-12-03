@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
 import axios from 'axios'; 
 import { toast } from 'react-toastify';
+import "../common/CheckoutForm.css"
 
 const CheckoutForm = ({ amount }) => { 
   const stripe = useStripe();
   const elements = useElements();
+  const [paymentSuccess, setPaymentSuccess] = useState(null);
+  const [paymentDetails, setPaymentDetails] = useState({});
+  const [paymentForm, setPaymentForm] = useState(true);
+
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -39,6 +44,10 @@ const CheckoutForm = ({ amount }) => {
                 position: toast.POSITION.TOP_RIGHT,
 
             });
+        setPaymentSuccess(true)
+        setPaymentDetails(response.data)
+        setPaymentForm(false)
+
       } catch (error) {
         console.error('Payment error:', error.response ? error.response.data : error.message);
         toast.error('Payment failed: Please check payment details!',{
@@ -50,12 +59,25 @@ const CheckoutForm = ({ amount }) => {
   };
 
   return (
+    <div>
+    {paymentForm && (
     <form onSubmit={handleSubmit} className="stripe-form">
       <CardElement />
       <button type="submit" disabled={!stripe}>
         Pay ${amount / 100}.00   
       </button>
     </form>
+    )}
+    {paymentSuccess && (
+        <div className="payment-details">
+          <h4>Payment Successful!</h4>
+          <p>Transaction ID: {paymentDetails.id}</p>
+          <p>Amount: ${paymentDetails.amount / 100}</p>
+          <p>Currency: {paymentDetails.currency.toUpperCase()}</p>
+          <p>Status: {paymentDetails.status.toUpperCase()}</p>
+        </div>
+      )}
+      </div>
   );
 };
 

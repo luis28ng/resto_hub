@@ -1,0 +1,21 @@
+.payment-details {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    border: 1px solid #eaeaea;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.payment-details h4 {
+    color: #4CAF50;
+    margin-bottom: 10px;
+}
+
+.payment-details p {
+    color: #333;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin: 4px 0;
+}
+

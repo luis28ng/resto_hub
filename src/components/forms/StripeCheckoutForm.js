@@ -10,7 +10,7 @@ const StripeCheckoutForm = ({amount}) => {
   return (
     <Elements stripe={stripePromise}>
         <div className="stripe-checkout">
-                  <CheckoutForm amount={amount} />
+                  <CheckoutForm amount={amount} /> 
         </div>
     </Elements>
   );
