@@ -21,11 +21,15 @@ import '../src/css/login.css'
 import NavbarComponent from './components/navbar.js';
 import Footer from './components/Footer.js';
 
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+const stripePromise = loadStripe('pk_test_51OIuIuDO4Uky0rV8frmPM757FFsPJtY2PVnrQFLmjgDjlocSVO3VNTa1i1cj17WZ8loQt1c7ArEmVdvUvh2UkRDo00IdigWFpU');
+
 
 const App = () => {
     const location = useLocation();
 
-    return (
+    return (<Elements stripe={stripePromise}>
         <>
             <NavbarComponent/>
             <AnimatePresence mode='wait'>
@@ -51,6 +55,7 @@ const App = () => {
             </AnimatePresence>
             <Footer />
         </>
+        </Elements>
         
     )
 }

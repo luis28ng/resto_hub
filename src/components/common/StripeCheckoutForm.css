@@ -1,0 +1,42 @@
+
+.stripe-form {
+    background: #f6f9fc;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.10);
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.stripe-form form {
+    display: flex;
+    flex-direction: column;
+}
+
+.StripeElement {
+    background: white;
+    padding: 10px 15px;
+    border: 1px solid #ccd0d2;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.StripeElement--focus {
+    box-shadow: 0 1px 3px 0 #cfd7df;
+}
+
+.stripe-form button {
+    background: #556cd6;
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 12px 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.stripe-form button:hover {
+    background: #43458b;
+}
