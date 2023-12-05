@@ -3,8 +3,7 @@ import { Container } from 'react-bootstrap';
 import axios from 'axios';
 import Navbar from "../components/navbar.js";
 import { getRestId } from "../utils/utils.js";
-import AddOrderForm from '../components/forms/AddOrderForm.js';
-import CustomersTable from '../components/tables/CustomerTable.js';
+import CustomersTable from '../components/CustomerTable.js';
 
 const apiUrl = 'http://restohub-api.us-east-2.elasticbeanstalk.com';
 
@@ -14,8 +13,12 @@ const WaiterDashBoard = () => {
     const [restaurantId, setRestaurantId] = useState("");
 
     useEffect(() => {
-        setRestaurantId(getRestId());
-        fetchCheckedInCustomers();
+        const fetchData = async () => {
+            setRestaurantId(getRestId());
+            await fetchCheckedInCustomers();
+        }
+
+        fetchData();
     }, []);
 
     const fetchCheckedInCustomers = async () => {
@@ -25,8 +28,16 @@ const WaiterDashBoard = () => {
                     restaurantId: getRestId()
                 }
             });
-            console.log(response);
-            setCheckedInCustomers(response.data);
+
+            console.log(response)
+
+            // Filter reservations for today
+            const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+            const filteredReservations = response.data.filter(reservation => {
+                const reservationDate = reservation.reservationDate.split(' ')[0];
+                return reservationDate === today;
+            });
+            setCheckedInCustomers(filteredReservations);
         } catch (error) {
             console.error('Error fetching checked-in customers:', error);
             setCheckedInCustomers([]);
@@ -53,17 +64,6 @@ const WaiterDashBoard = () => {
                             <CustomersTable checkedInCustomers={checkedInCustomers} />
                         </Container>
                     </div>
-                )}
-                {showAddOrderForm && (
-                    <AddOrderForm
-                        handleClose={handleCloseAddOrderForm}
-                        restaurantId={restaurantId}
-                        handleAddOrder={(orderRequest) => {
-                            // Replace the following log with your actual API call to submit the order
-                            console.log('Order Submitted:', orderRequest);
-                            handleCloseAddOrderForm();
-                        }}
-                    />
                 )}
             </Container>
         </div>
