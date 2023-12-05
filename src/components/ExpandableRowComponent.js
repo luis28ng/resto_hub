@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
-import OrderForm from './forms/orderForm';
+import OrderForm from './forms/OrderForm';
 
 const ExpandableRowComponent = ({ data }) => {
     const [isExpanded, setIsExpanded] = useState(false);
@@ -17,7 +17,7 @@ const ExpandableRowComponent = ({ data }) => {
                 onClick={handleRowClick}
             >
                 {/* Render the OrderForm component with necessary props */}
-                <OrderForm customer={data} restaurantId={data.restaurantId} />
+                <OrderForm customer={data} />
             </Row>
         </Container>
     );
