@@ -1,54 +1,83 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { Button, Form } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import AddOrderForm from './AddOrderForm';
+import { getRestId } from "../../utils/utils.js";
+import OrderTable from '../components/OrderTable';
 
 import 'react-toastify/dist/ReactToastify.css';
 
 const apiUrl = 'http://restohub-api.us-east-2.elasticbeanstalk.com';
 
-const OrderForm = ({ customer, restaurantId }) => {
+/**
+ * Creates and manages a form for food orders.
+ * 
+ * @param {Object} orderRequest - The details of the order request.
+ * @param {Object} customer - The customer for whom the orders are being managed.
+ * @returns {React.Component} - A React functional component that manages the creation, editing, and cancellation of food orders for a customer.
+ */
+const OrderForm = (orderRequest, customer) => {
     const [foodItem, setFoodItem] = useState('');
-    const [foodOrders, setFoodOrders] = useState(customer.foodOrders || []);
+    const [foodOrders, setFoodOrders] = useState('');
     const [editIndex, setEditIndex] = useState(null);
     const [showAddOrderModal, setShowAddOrderModal] = useState(false);
+    const [selectedItems, setSelectedItems] = useState([]);
+
+    useEffect(() => {
+        setFoodOrders(fetchCustomerOrders());
+    }, []);
 
 
-    const handleAddOrder = async () => {
+
+    const handleAddOrder = async (orderRequest) => {
         try {
-            const response = await axios.post(`${apiUrl}/api/staff/createOrder`, {
-                restaurantId: restaurantId,
-                customerId: customer.id,
-                foodItem: foodItem,
-            });
+            const response = await axios.post(
+                `${apiUrl}/api/staff/createOrder`,
+                {
+                    orderRequest: orderRequest,
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
 
-            if (response.status === 201) {
+            if (response.status === 200) {
                 toast.success('Order created successfully', { position: toast.POSITION.TOP_RIGHT });
 
-                //Fetch and Update the list of orders after creating a new order
-                fetchOrders();
-            }
-            else {
+                // Fetch and Update the list of orders after creating a new order
+                await fetchCustomerOrders();
+            } else {
                 console.error('Failed to create order:', response.data);
                 toast.error('Failed to create order', { position: toast.POSITION.TOP_RIGHT });
             }
-
-        }
-        catch (error) {
-            console.error('Error creating order:', error);
+        } catch (error) {
             toast.error('Error creating order', { position: toast.POSITION.TOP_RIGHT });
         }
+
         // Reset form state
-        setFoodItem('');
-        setEditIndex(null);
+        setSelectedItems([]);
         setShowAddOrderModal(false);
     };
 
-    const fetchOrders = async () => {
+
+    const fetchCustomerOrders = async () => {
+        /**
+         * Fetches a list of orders for a specific customer from a REST API.
+         * 
+         * @throws {Error} If there is an error during the request.
+         * 
+         */
         try {
-            const response = await axios.get(`${apiUrl}/api/staff/orders?customerId=${customer.id}`);
+            const response = await axios.get(`${apiUrl}/api/staff/finalOrderInfo`, {
+                params: {
+                    orderId: 2,
+                },
+            });
+            console.log(response);
             setFoodOrders(response.data);
         } catch (error) {
             console.error('Error fetching orders:', error);
@@ -73,25 +102,7 @@ const OrderForm = ({ customer, restaurantId }) => {
     return (
         <div>
             {foodOrders.length > 0 ? (
-                <div>
-                    <ul>
-                        {foodOrders.map((order, index) => (
-                            <li key={index}>
-                                <>
-                                    <span>{order}</span>
-                                    <div style={{ display: 'inline-block', marginLeft: '10px' }}>
-                                        <Button variant="primary" onClick={() => handleEditOrder(index)}>
-                                            Edit
-                                        </Button>
-                                        <Button variant="danger" onClick={() => handleCancelOrder(index)}>
-                                            Cancel Order
-                                        </Button>
-                                    </div>
-                                </>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
+                <OrderTable orders={foodOrders} handleEditOrder={handleEditOrder} handleCancelOrder={handleCancelOrder} />
             ) : (
                 <div>
                     <p>No orders yet</p>
@@ -102,7 +113,10 @@ const OrderForm = ({ customer, restaurantId }) => {
             )}
 
             {showAddOrderModal && (
-                <AddOrderForm handleAddOrder={handleAddOrder} handleClose={() => setShowAddOrderModal(false)} />
+                <AddOrderForm
+                    handleAddOrder={handleAddOrder}
+                    handleClose={() => setShowAddOrderModal(false)}
+                    setSelectedItems={setSelectedItems} />
             )}
 
 
