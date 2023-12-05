@@ -7,24 +7,24 @@ const HomePageCarousel = () => {
     return (
         <Carousel variant='dark'>
             <Carousel.Item>
-                <img className="d-block w-100" src={RestoHubImageOne} /> 
+                <img className="d-block w-100" src={RestoHubImageOne} />
                 <Carousel.Caption>
-                <h3>Find Good Food Fast</h3>
-                <p>RestoHub allows you to make reservations to any participating restaurant!</p>
+                    <h3>Find Good Food Fast</h3>
+                    <p>RestoHub allows you to make reservations to any participating restaurant!</p>
                 </Carousel.Caption>
             </Carousel.Item>
             <Carousel.Item>
-                <img className="d-block w-100" src={RestoHubImageTwo} />  
+                <img className="d-block w-100" src={RestoHubImageTwo} />
                 <Carousel.Caption>
-                <h3>Discover a New Dining Experience</h3>
-                <p></p>
+                    <h3>Discover a New Dining Experience</h3>
+                    <p></p>
                 </Carousel.Caption>
             </Carousel.Item>
             <Carousel.Item>
-                <img className="d-block w-100" src={RestoHubImageThree} />  
+                <img className="d-block w-100" src={RestoHubImageThree} />
                 <Carousel.Caption>
-                <h3>Restaurant-Friendly</h3>
-                <p>RestoHub makes it easy for Restaurants to view, manage and serve patrons for a world-class experience.</p>
+                    <h3>Restaurant-Friendly</h3>
+                    <p>RestoHub makes it easy for Restaurants to view, manage and serve patrons for a world-class experience.</p>
                 </Carousel.Caption>
             </Carousel.Item>
         </Carousel>
