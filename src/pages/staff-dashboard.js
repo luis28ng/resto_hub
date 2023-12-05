@@ -1,12 +1,18 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import "bootstrap/dist/css/bootstrap.css";
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import React, { useCallback, useEffect, useState } from 'react';
+
 import axios from "axios";
-import { Button, Container, Tab, Tabs } from 'react-bootstrap';
 import DataTable from 'react-data-table-component';
-import { getRestId } from "../utils/utils.js";
+import { toast, ToastContainer } from 'react-toastify';
+import { Button, Container, Tab, Tabs } from 'react-bootstrap';
+
+
+
+import Navbar from "../components/navbar.js";
+import { getRestId, formatDate } from "../utils/utils.js";
 import ExpandableRowComponent from "../components/ExpandableRowComponent";
+
+import "bootstrap/dist/css/bootstrap.css";
+import 'react-toastify/dist/ReactToastify.css';
 
 
 
@@ -20,49 +26,75 @@ const StaffDashBoard = () => {
     const [restaurantId, setRestaurantId] = useState('')
     const [checkedInCustomers, setCheckedInCustomers] = useState([]);
 
-
+    /**
+     * Sets the date range for the "Today" tab in the staff dashboard.
+     * Calculates the start and end dates based on the current date,
+     * formats them in the required format, and updates the state variables
+     * for the date range and active tab.
+     */
     const selectedDateRangeToday = () => {
         console.log("Today tab selected");
+
         const today = new Date();
         const endDate = new Date(today);
         endDate.setDate(today.getDate() + 1);
 
-        const formattedStartDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')} 00:00:00`;
-        const formattedEndDate = `${endDate.getFullYear()}-${String(endDate.getMonth() + 1).padStart(2, '0')}-${String(endDate.getDate()).padStart(2, '0')} 00:00:00`;
+        const formattedStartDate = formatDate(today);
+        const formattedEndDate = formatDate(endDate);
 
         setDateRange([formattedStartDate, formattedEndDate]);
         setActiveTab('today');
     };
 
+    /**
+     * Sets the date range for the "current week" tab in the staff dashboard.
+     * Calculates the start and end dates based on the current date,
+     * formats them in the required format, and updates the state variables
+     * for the date range and active tab.
+     */
     const selectedDateRangeThisWeek = () => {
         console.log("This week tab selected");
         const today = new Date();
         const endDate = new Date(today);
         endDate.setDate(today.getDate() + 7);
 
-        const formattedStartDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')} 00:00:00`;
-        const formattedEndDate = `${endDate.getFullYear()}-${String(endDate.getMonth() + 1).padStart(2, '0')}-${String(endDate.getDate()).padStart(2, '0')} 00:00:00`;
+        const formattedStartDate = formatDate(today);
+        const formattedEndDate = formatDate(endDate);
 
         setDateRange([formattedStartDate, formattedEndDate]);
         setActiveTab('thisWeek');
     };
 
-
+    /**
+     * Fetches the checked-in customers updates the state of the component.
+     */
     const fetchCheckedInCustomers = async () => {
         console.log("Checked-in tab selected");
         try {
-            const response = await axios.get(`${baseURL}/reservations/getReservedTimes`)
+            const response = await axios.get(`${baseURL}/reservations/checkedIn`, {
+                params: {
+                    restaurantId: getRestId()
+                }
+            });
             setCheckedInCustomers(response.data);
             setActiveTab('checkedInCustomer');
         } catch (error) {
-            console.error('Error fetching checked-in customers:', error);
+            console.log('Error thrown: ', error)
+            // console.error('Error fetching checked-in customers:', error);
             setCheckedInCustomers([]); // Set to an empty array in case of an error
             setActiveTab('checkedInCustomer');
         }
 
     };
 
-    const fetchData = useCallback(async () => {
+    /**
+         * Fetches reservation data for a given date range and updates the resavation state.
+         * 
+         * @param {Array} dateRange - An array containing two elements representing the start and end dates of the desired date range.
+         * @param {number} restaurantId - The ID of the restaurant for which the reservation data is being fetched.
+         * 
+         */
+    const fetchReservationData = useCallback(async () => {
         const [startDate, endDate] = dateRange;
         const params = {
             restaurantId: restaurantId,
@@ -89,17 +121,17 @@ const StaffDashBoard = () => {
     }, []);
 
     useEffect(() => {
-        fetchData()
-    }, [dateRange, fetchData]);
+        fetchReservationData()
+    }, [dateRange, fetchReservationData]);
 
     useEffect(() => {
-        const fetchDataAndCheckedIn = async () => {
+        const fetchReservationDataAndCheckedIn = async () => {
             if (activeTab === 'checkedInCustomer') {
                 await fetchCheckedInCustomers();
             }
         };
 
-        fetchDataAndCheckedIn();
+        fetchReservationDataAndCheckedIn();
     }, [activeTab]);
 
 
@@ -113,19 +145,22 @@ const StaffDashBoard = () => {
         setSelectedRows(state.selectedRows.map((row) => row.id));
     };
 
+    /*
+     * Handles the check-in of reservations.
+     */
     const handleCheckIn = async () => {
-        if (selectedRows === null || selectedRows.length === 0 || selectedRows === undefined) {
-            toast.error('No reservations selected for check-in', {
-                position: toast.POSITION.TOP_RIGHT
-            });
-            return;
-        }
-
-        let reservationId = selectedRows[0];
         try {
-            let response = await axios.put(`${baseURL}/reservations/checkIn`, null, {
+            if (!selectedRows || selectedRows.length === 0) {
+                toast.error('No reservations selected for check-in', {
+                    position: toast.POSITION.TOP_RIGHT
+                });
+                return;
+            }
+
+            const reservationId = selectedRows[0];
+            const response = await axios.put(`${baseURL}/reservations/checkIn`, null, {
                 params: {
-                    reservationId: reservationId
+                    reservationId
                 }
             });
 
@@ -138,7 +173,7 @@ const StaffDashBoard = () => {
                     prevReservations.filter(res => res.id !== reservationId)
                 ));
 
-                fetchData(); // Use the updated state here
+                fetchReservationData(); // Use the updated state here
 
             } else if (!response.data) {
                 toast.error(`No Invalid Reservation ID Provided: ${reservationId}`, {
@@ -159,6 +194,7 @@ const StaffDashBoard = () => {
     return (
         <div>
             <ToastContainer />
+            <Navbar />
             <Container>
                 <br></br>
                 <h1>Check-in Dashboard</h1>
