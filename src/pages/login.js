@@ -6,7 +6,10 @@ import { toast, ToastContainer } from 'react-toastify';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 
+import Navbar from "../components/navbar.js";
+import Spinner from '../components/common/Spinner';
 import { login } from '../services/authService';
+
 
 import { redirectToUserDashboard } from '../utils/utils.js';
 
@@ -17,7 +20,7 @@ import '../css/login.css'
 
 
 const Login = () => {
-
+    const [isLoading, setIsLoading] = useState(false);
     const [logInfo, setlogInfo] = useState({
         email: '',
         password: ''
@@ -45,6 +48,7 @@ const Login = () => {
             });
             return;
         }
+        setIsLoading(true);
 
         const { success, data, error } = await login(email, password);
 
@@ -69,6 +73,7 @@ const Login = () => {
             });
 
             setTimeout(() => {
+                console.log('Redirecting to userdashboard');
                 redirectToUserDashboard();
             }, 2000);
 
@@ -77,10 +82,17 @@ const Login = () => {
                 { position: toast.POSITION.TOP_RIGHT }
             );
         }
+        setIsLoading(false);
     };
 
     return (
         <div>
+            <Navbar />
+            {isLoading && (
+                <div className="overlay">
+                    <Spinner />
+                </div>
+            )}
             <ToastContainer />
             <Container className="form-container">
                 <Form className="formclass centered" onSubmit={handleSubmit}>
