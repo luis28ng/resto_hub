@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { Button } from 'react-bootstrap';
-import AddOrderForm from './AddOrderForm';
-import OrderTable from './src/components/OrderTable';
+import AddOrderForm from './AddOrderForm.js';
+import OrderTable from '../OrderTable.js';
 
 import 'react-toastify/dist/ReactToastify.css';
 

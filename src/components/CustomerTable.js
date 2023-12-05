@@ -1,7 +1,7 @@
 // CheckedInCustomersTable.js
 import React from 'react';
 import DataTable from 'react-data-table-component';
-import ExpandableRowComponent from '../ExpandableRowComponent';
+import ExpandableRowComponent from './ExpandableRowComponent.js';
 
 const CheckedInCustomersTable = ({ checkedInCustomers }) => {
     const columns = [

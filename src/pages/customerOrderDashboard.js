@@ -3,7 +3,7 @@ import { Container } from 'react-bootstrap';
 import axios from 'axios';
 import Navbar from "../components/navbar.js";
 import { getRestId } from "../utils/utils.js";
-import CustomersTable from '../components/CustomerTable.js';
+import CustomerTable from '../components/CustomerTable.js';
 
 const apiUrl = 'http://restohub-api.us-east-2.elasticbeanstalk.com';
 
@@ -61,7 +61,7 @@ const WaiterDashBoard = () => {
                 ) : (
                     <div>
                         <Container>
-                            <CustomersTable checkedInCustomers={checkedInCustomers} />
+                            <CustomerTable checkedInCustomers={checkedInCustomers} />
                         </Container>
                     </div>
                 )}

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
-import OrderForm from './forms/OrderForm';
+import OrderForm from './forms/orderForm.js';
 
 const ExpandableRowComponent = ({ data }) => {
     const [isExpanded, setIsExpanded] = useState(false);
