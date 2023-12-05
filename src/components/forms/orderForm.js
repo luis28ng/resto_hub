@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { Button } from 'react-bootstrap';
 import AddOrderForm from './AddOrderForm';
 import { getRestId } from "../../utils/utils.js";
-import OrderTable from '../components/OrderTable';
+import OrderTable from '../tables/OrderTable';
 
 import 'react-toastify/dist/ReactToastify.css';
 
