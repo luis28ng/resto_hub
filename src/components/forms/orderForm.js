@@ -1,83 +1,85 @@
 import React, { useEffect, useState } from 'react';
-
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { Button } from 'react-bootstrap';
 import AddOrderForm from './AddOrderForm';
-import { getRestId } from "../../utils/utils.js";
 import OrderTable from '../tables/OrderTable';
 
 import 'react-toastify/dist/ReactToastify.css';
 
 const apiUrl = 'http://restohub-api.us-east-2.elasticbeanstalk.com';
 
-/**
- * Creates and manages a form for food orders.
- * 
- * @param {Object} orderRequest - The details of the order request.
- * @param {Object} customer - The customer for whom the orders are being managed.
- * @returns {React.Component} - A React functional component that manages the creation, editing, and cancellation of food orders for a customer.
- */
-const OrderForm = (orderRequest, customer) => {
+const OrderForm = ({ customer }) => {
     const [foodItem, setFoodItem] = useState('');
-    const [foodOrders, setFoodOrders] = useState('');
+    const [foodOrders, setFoodOrders] = useState([]);
     const [editIndex, setEditIndex] = useState(null);
     const [showAddOrderModal, setShowAddOrderModal] = useState(false);
     const [selectedItems, setSelectedItems] = useState([]);
+    const [reservationCode, setReservationCode] = useState('');
 
     useEffect(() => {
-        setFoodOrders(fetchCustomerOrders());
-    }, []);
+        if (customer && customer.reservationCode) {
+            setReservationCode(customer.reservationCode);
+        }
+    }, [customer]);
 
+    useEffect(() => {
+        const fetchData = async () => {
+            if (reservationCode) {
+                try {
+                    const response = await axios.get(`${apiUrl}/api/staff/getOrder`, {
+                        params: {
+                            reservationCode: reservationCode,
+                        },
+                    });
+                    setFoodOrders(response.data);
+                } catch (error) {
+                    console.error('Error fetching orders:', error);
+                    toast.error('Error fetching orders', { position: toast.POSITION.TOP_RIGHT });
+                    setFoodOrders([]);
+                }
+            }
+        };
 
+        fetchData();
+    }, [reservationCode]);
 
     const handleAddOrder = async (orderRequest) => {
         try {
-            const response = await axios.post(
-                `${apiUrl}/api/staff/createOrder`,
+            const response = await axios.post(`${apiUrl}/api/staff/createOrder`,
                 {
-                    orderRequest: orderRequest,
+                    reservationCode: orderRequest.reservationCode,
+                    orderStatus: orderRequest.orderStatus,
+                    instructions: orderRequest.instructions,
+                    restaurantId: orderRequest.restaurantId,
+                    orderItems: orderRequest.orderItems,
                 },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                }
             );
 
-            if (response.status === 200) {
+            if (response.status === 201) {
                 toast.success('Order created successfully', { position: toast.POSITION.TOP_RIGHT });
-
-                // Fetch and Update the list of orders after creating a new order
-                await fetchCustomerOrders();
+                await fetchCustomerOrders(reservationCode);
             } else {
+                console.log('backend responded with: ', response);
                 console.error('Failed to create order:', response.data);
                 toast.error('Failed to create order', { position: toast.POSITION.TOP_RIGHT });
             }
         } catch (error) {
+            console.error('Error creating order:', error);
             toast.error('Error creating order', { position: toast.POSITION.TOP_RIGHT });
         }
 
-        // Reset form state
         setSelectedItems([]);
         setShowAddOrderModal(false);
     };
 
-
-    const fetchCustomerOrders = async () => {
-        /**
-         * Fetches a list of orders for a specific customer from a REST API.
-         * 
-         * @throws {Error} If there is an error during the request.
-         * 
-         */
+    const fetchCustomerOrders = async (code) => {
         try {
-            const response = await axios.get(`${apiUrl}/api/staff/finalOrderInfo`, {
+            const response = await axios.get(`${apiUrl}/api/staff/getOrder`, {
                 params: {
-                    orderId: 2,
+                    reservationCode: code,
                 },
             });
-            console.log(response);
             setFoodOrders(response.data);
         } catch (error) {
             console.error('Error fetching orders:', error);
@@ -85,7 +87,6 @@ const OrderForm = (orderRequest, customer) => {
             setFoodOrders([]);
         }
     };
-
 
     const handleEditOrder = (index) => {
         setEditIndex(index);
@@ -101,7 +102,7 @@ const OrderForm = (orderRequest, customer) => {
 
     return (
         <div>
-            {foodOrders.length > 0 ? (
+            {foodOrders.length !== 0 ? (
                 <OrderTable orders={foodOrders} handleEditOrder={handleEditOrder} handleCancelOrder={handleCancelOrder} />
             ) : (
                 <div>
@@ -116,12 +117,12 @@ const OrderForm = (orderRequest, customer) => {
                 <AddOrderForm
                     handleAddOrder={handleAddOrder}
                     handleClose={() => setShowAddOrderModal(false)}
-                    setSelectedItems={setSelectedItems} />
+                    setSelectedItems={setSelectedItems}
+                    reservationCode={reservationCode}
+                />
             )}
-
-
         </div>
-    )
+    );
 };
 
-export default OrderForm
+export default OrderForm;
