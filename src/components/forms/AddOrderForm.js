@@ -5,11 +5,12 @@ import { toast } from 'react-toastify';
 import { Button, Form, Modal } from 'react-bootstrap';
 import { getRestId } from "../../utils/utils.js";
 
-const AddOrderForm = ({ handleAddOrder, handleClose }) => {
+const AddOrderForm = ({ handleAddOrder, handleClose, reservationCode }) => {
     const [foodItem, setFoodItem] = useState('');
     const [menuItems, setMenuItems] = useState([]);
     const [selectedItems, setSelectedItems] = useState([]);
     const [quantities, setQuantities] = useState({});
+    const [instructions, setInstructions] = useState('');
     const [restaurantId, setRestaurantId] = useState('');
     const [orderStatus, setOrderStatus] = useState('PENDING');
 
@@ -18,12 +19,14 @@ const AddOrderForm = ({ handleAddOrder, handleClose }) => {
     };
 
     useEffect(() => {
-        setRestaurantId(getRestId());
-    }, []);
+        const fetchData = async () => {
+            setRestaurantId(getRestId());
+            await getMenu(restaurantId)
+        }
+        fetchData();
 
-    useEffect(() => {
-        getMenu();
     }, [restaurantId]);
+
 
     const getMenu = async () => {
         try {
@@ -89,39 +92,43 @@ const AddOrderForm = ({ handleAddOrder, handleClose }) => {
     };
 
     const handleSubmit = () => {
+        const orderItems = selectedItems.map((itemName, index) => {
+            const menuItem = menuItems.find((item) => item.name === itemName);
+
+            if (!menuItem || menuItem.id == null) {
+                console.error(`Invalid menuItem or missing itemId at index ${index} for itemName: ${itemName}`, menuItem);
+                return null; // or handle the issue appropriately
+            }
+
+            const quantity = quantities[itemName] || 1;
+            const subTotal = quantity * menuItem.price;
+
+            return {
+                itemId: menuItem.id,
+                menuItem: menuItem,
+                quantity: quantity,
+                pricePerItem: menuItem.price,
+                subTotal: subTotal,
+            };
+        }).filter(Boolean);
+
+        const totalOrderAmount = orderItems.reduce((total, item) => total + item.subTotal, 0);
+
         const orderRequest = {
-            reservationCode: '',
+            reservationCode: reservationCode,
             orderStatus: orderStatus,
-            instructions: '',
+            instructions: instructions,
             restaurantId: parseInt(restaurantId, 10),
-            orderItems: selectedItems.map((itemName, index) => {
-                const menuItem = menuItems.find((item) => item.name === itemName);
-
-                if (!menuItem || menuItem.id == null) {
-                    console.error(`Invalid menuItem or missing itemId at index ${index} for itemName: ${itemName}`, menuItem);
-                    return null; // or handle the issue appropriately
-                }
-
-                const quantity = quantities[itemName] || 1;
-                const subTotal = quantity * menuItem.price;
-
-                return {
-                    itemId: menuItem.id,
-                    menuItem: menuItem,
-                    quantity: quantity,
-                    pricePerItem: menuItem.price,
-                    subTotal: subTotal,
-                };
-            }).filter(Boolean),
+            orderItems: orderItems,
+            totalOrderAmount: totalOrderAmount,
         };
-
-        console.log('Order Request:', orderRequest);
 
         handleAddOrder(orderRequest);
 
         setFoodItem('');
         setSelectedItems([]);
         setQuantities({});
+        setInstructions('');
     };
 
     return (
@@ -180,7 +187,18 @@ const AddOrderForm = ({ handleAddOrder, handleClose }) => {
                                 </option>
                             ))}
                         </Form.Control>
-
+                    </Form.Group>
+                    <Form.Group controlId="formInstructions">
+                        <Form.Label>Instructions:</Form.Label>
+                        <Form.Control
+                            type="text"
+                            value={instructions}
+                            onChange={(e) => setInstructions(e.target.value)}
+                            placeholder="Enter special instructions"
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="orderStatusSelect">
+                        <Form.Label>Order Status:</Form.Label>
                         <Form.Control
                             as="select"
                             value={orderStatus}
