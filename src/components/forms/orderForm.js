@@ -3,7 +3,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { Button } from 'react-bootstrap';
 import AddOrderForm from './AddOrderForm';
-import OrderTable from '../OrderTable';
+import OrderTable from '../components/OrderTable';
 
 import 'react-toastify/dist/ReactToastify.css';
 
