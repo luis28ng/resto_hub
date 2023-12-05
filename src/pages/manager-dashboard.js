@@ -1,3 +1,4 @@
+import Navbar from "../components/navbar.js";
 import { getRestId } from "../utils/utils.js";
 import axios from "axios";
 import React, { useEffect, useState } from 'react';
@@ -34,19 +35,19 @@ const ManagerDashBoard = () => {
 
         try {
             const response = await axios.get('http://restohub-api.us-east-2.elasticbeanstalk.com/api/manager/getAllStaff', {
-            params: {
-                restaurantId: 1
-            },
-            headers: {
-                'Content-Type': 'application/json'
-            }
+                params: {
+                    restaurantId: getRestId()
+                },
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             })
 
             setAllStaff(response.data);
         } catch (e) {
             console.error("Error fetching data: ", e);
         }
-        
+
     };
 
     const resetModalState = () => {
@@ -170,14 +171,14 @@ const ManagerDashBoard = () => {
     const handleUserInfoChange = (e) => {
         const { name, value } = e.target;
         setUserInfo((prevData) => ({
-        ...prevData,
-        [name]: value,
+            ...prevData,
+            [name]: value,
         }));
     };
 
     const columns = [
-        {name: 'Email', selector: (row, i) => row.email, center: true, sortable: true},
-        {name: 'Role', selector: (row, i) => row.appRole, center: true, sortable: true},
+        { name: 'Email', selector: (row, i) => row.email, center: true, sortable: true },
+        { name: 'Role', selector: (row, i) => row.appRole, center: true, sortable: true },
         {
             name: '',
             cell: (row, index, column, id) => (
@@ -209,13 +210,14 @@ const ManagerDashBoard = () => {
         console.log(editStaffInfo)
     }
 
-    return(
+    return (
         <div>
+            <Navbar />
             <ToastContainer />
             <Container>
                 <h1>Manager Dashboard</h1>
                 <Button onClick={() => setShowCreateModal(true)} variant="success">Create new staff member</Button>
-                <Modal show={showCreateModal} onHide={() => {setShowCreateModal(false)}}>
+                <Modal show={showCreateModal} onHide={() => { setShowCreateModal(false) }}>
                     <Container>
                         <Form className="formclass centered" onSubmit={handleCreate}>
                             <Modal.Header closeButton>
@@ -225,15 +227,15 @@ const ManagerDashBoard = () => {
                                 <Form.Group>
                                     <div className="form-group">
                                         <Form.Label>Select a role</Form.Label>
-                                            <Form.Select value={newUserRole} onChange={handleUserRoleChange}>
-                                                <option value="" disabled>Select the role</option>
-                                                <option value="RESTAURANT_STAFF">Restaurant staff</option>
-                                                <option value="RESTAURANT_WAITER">Restaurant waiter</option>
-                                            </Form.Select>
+                                        <Form.Select value={newUserRole} onChange={handleUserRoleChange}>
+                                            <option value="" disabled>Select the role</option>
+                                            <option value="RESTAURANT_STAFF">Restaurant staff</option>
+                                            <option value="RESTAURANT_WAITER">Restaurant waiter</option>
+                                        </Form.Select>
                                     </div>
                                 </Form.Group>
                                 <Form.Group>
-                                    <div className="form-group"> 
+                                    <div className="form-group">
                                         <Form.Label>Email Address</Form.Label>
                                         <Form.Control
                                             type='text'
@@ -265,11 +267,11 @@ const ManagerDashBoard = () => {
                     </Container>
                 </Modal>
                 <Container>
-                    <DataTable 
-                    columns={columns}
-                    data={allStaff}
-                    fixedHeader
-                    striped
+                    <DataTable
+                        columns={columns}
+                        data={allStaff}
+                        fixedHeader
+                        striped
                     />
                 </Container>
                 <Container>
@@ -320,6 +322,6 @@ const ManagerDashBoard = () => {
             </Container>
         </div>
     );
-}  
+}
 
 export default ManagerDashBoard;
