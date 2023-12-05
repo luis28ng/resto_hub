@@ -10,6 +10,7 @@ const CheckedInCustomersTable = ({ checkedInCustomers }) => {
         { name: 'Email Address', selector: (row) => row.emailAddress, center: true, sortable: true },
         { name: 'Party Size', selector: (row) => row.partySize, center: true, sortable: true },
         { name: 'Reservation Date', selector: (row) => row.reservationDate, center: true, sortable: true },
+        { name: 'Reservation Code', selector: (row) => row.reservationCode, center: true, sortable: true },
 
     ];
 
