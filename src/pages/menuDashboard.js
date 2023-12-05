@@ -1,4 +1,5 @@
 import { Button, Container, Form, Modal } from "react-bootstrap";
+import Navbar from "../components/navbar.js";
 import { useEffect, useState } from "react";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -31,15 +32,14 @@ const Menu = () => {
     useEffect(() => {
         setRestaurantId(getRestId());
     }, []);
-    
+
     useEffect(() => {
         getMenu();
     }, [restaurantId]);
-    
 
     const getMenu = async () => {
         try {
-            const response = await axios.get("http://restohub-api.us-east-2.elasticbeanstalk.com/api/manager/menuItems", {
+            const response = await axios.get("http://restohub-api.us-east-2.elasticbeanstalk.com/api/staff/menuItems", {
                 params: {
                     restaurantId: restaurantId
                 },
@@ -47,7 +47,7 @@ const Menu = () => {
                     'Content-Type': 'application/json'
                 }
             })
-
+            console.log(response);
             setMenuData(response.data)
         } catch (e) {
             console.log(e)
@@ -55,10 +55,10 @@ const Menu = () => {
     };
 
     const columns = [
-        {name: 'Name', selector: (row, i) => row.name, center: true, sortable: true},
-        {name: 'Description', selector: (row, i) => row.description, center: true, sortable: true},
-        {name: 'Price', selector: (row, i) => row.price, center: true, sortable: true},
-        {name: 'Category', selector: (row, i) => row.category, center: true, sortable: true},
+        { name: 'Name', selector: (row, i) => row.name, center: true, sortable: true },
+        { name: 'Description', selector: (row, i) => row.description, center: true, sortable: true },
+        { name: 'Price', selector: (row, i) => row.price, center: true, sortable: true },
+        { name: 'Category', selector: (row, i) => row.category, center: true, sortable: true },
         {
             name: '',
             cell: (row, index, column, id) => (
@@ -88,8 +88,8 @@ const Menu = () => {
     const handleMenuItemChange = (e) => {
         const { name, value } = e.target;
         setMenuItem((prevData) => ({
-        ...prevData,
-        [name]: value,
+            ...prevData,
+            [name]: value,
         }));
     };
 
@@ -107,12 +107,12 @@ const Menu = () => {
     const handleCategoryChange = async (e) => {
         const selectedCategory = e.target.value;
         setCategory(selectedCategory);
-        
+
     };
 
     const handleCreate = async (e) => {
         e.preventDefault();
-        
+
         const newMenuItem = {
             menuItem: {
                 name: menuItem.name,
@@ -129,14 +129,14 @@ const Menu = () => {
                     'Content-Type': 'application/json'
                 }
             })
-            
+
             const itemName = response.data.name
 
             if (response.status === 200) {
                 toast.success(`New menu item ${itemName} was successfully created`, {
                     position: toast.POSITION.TOP_RIGHT
                 });
-                
+
                 resetModalState();
                 getMenu();
 
@@ -235,14 +235,15 @@ const Menu = () => {
         }
     }
 
-    return(
+    return (
         <div>
+            <Navbar />
             <ToastContainer />
             <Container>
                 <h1>Menu dashboard</h1>
                 <Button variant="success" onClick={() => setShowCreateModal(true)}>Create new menu item</Button>
                 <br></br>
-                <Modal show={showCreateModal} onHide={() => {setShowCreateModal(false)}}>
+                <Modal show={showCreateModal} onHide={() => { setShowCreateModal(false) }}>
                     <Container>
                         <Form className="formclass centered" onSubmit={handleCreate}>
                             <Modal.Header closeButton>
@@ -250,7 +251,7 @@ const Menu = () => {
                             </Modal.Header>
                             <Modal.Body>
                                 <Form.Group>
-                                    <div className="form-group"> 
+                                    <div className="form-group">
                                         <br></br>
                                         <Form.Label>Item name</Form.Label>
                                         <Form.Control
@@ -284,13 +285,13 @@ const Menu = () => {
                                         <br></br>
                                         <Form.Group>
                                             <Form.Label>Select a category</Form.Label>
-                                                <Form.Select value={category} onChange={handleCategoryChange} required>
-                                                    <option value="" disabled>Select a category</option>
-                                                    <option value="main">main</option>
-                                                    <option value="appetizer">appetizer</option>
-                                                    <option value="drink">drink</option>
-                                                    <option value="dessert">dessert</option>
-                                                </Form.Select>
+                                            <Form.Select value={category} onChange={handleCategoryChange} required>
+                                                <option value="" disabled>Select a category</option>
+                                                <option value="main">main</option>
+                                                <option value="appetizer">appetizer</option>
+                                                <option value="drink">drink</option>
+                                                <option value="dessert">dessert</option>
+                                            </Form.Select>
                                         </Form.Group>
                                     </div>
                                 </Form.Group>
@@ -305,11 +306,11 @@ const Menu = () => {
                     </Container>
                 </Modal>
                 <Container>
-                    <DataTable 
-                    data={menuData}
-                    columns={columns}
-                    fixedHeader
-                    striped
+                    <DataTable
+                        data={menuData}
+                        columns={columns}
+                        fixedHeader
+                        striped
                     />
                 </Container>
                 <Container>
@@ -371,6 +372,6 @@ const Menu = () => {
             </Container>
         </div>
     );
-}  
+}
 
 export default Menu;
