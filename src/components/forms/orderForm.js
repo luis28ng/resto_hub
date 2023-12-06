@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { Button } from 'react-bootstrap';
-import AddOrderForm from './AddOrderForm.js';
-import OrderTable from '../OrderTable.js';
+import AddOrderForm from './AddOrderForm';
+import OrderTable from './src/components/OrderTable';
 
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -100,10 +100,47 @@ const OrderForm = ({ customer }) => {
         setEditIndex(null);
     };
 
+    const handleUpdateOrderStatus = async (newOrderStatus) => {
+        try {
+            const response = await axios.put(
+                `${apiUrl}/api/staff/updateOrderStatus`,
+                {
+                    reservationCode: reservationCode,
+                    orderStatus: newOrderStatus,
+                }
+            );
+
+            if (response.status === 200) {
+                toast.success('Order status updated successfully', {
+                    position: toast.POSITION.TOP_RIGHT,
+                });
+
+                // Fetch updated orders after status update
+                await fetchCustomerOrders(reservationCode);
+            } else {
+                console.error('Failed to update order status:', response.data);
+                toast.error('Failed to update order status', {
+                    position: toast.POSITION.TOP_RIGHT,
+                });
+            }
+        } catch (error) {
+            console.error('Error updating order status:', error);
+            toast.error('Error updating order status', {
+                position: toast.POSITION.TOP_RIGHT,
+            });
+        }
+    };
+
     return (
         <div>
             {foodOrders.length !== 0 ? (
-                <OrderTable orders={foodOrders} handleEditOrder={handleEditOrder} handleCancelOrder={handleCancelOrder} />
+                <OrderTable
+                    orders={foodOrders}
+                    handleEditOrder={handleEditOrder}
+                    handleCancelOrder={handleCancelOrder}
+                    handleUpdateOrderStatus={handleUpdateOrderStatus}
+
+                />
             ) : (
                 <div>
                     <p>No orders yet</p>
@@ -111,15 +148,6 @@ const OrderForm = ({ customer }) => {
                         Add Order
                     </Button>
                 </div>
-            )}
-
-            {showAddOrderModal && (
-                <AddOrderForm
-                    handleAddOrder={handleAddOrder}
-                    handleClose={() => setShowAddOrderModal(false)}
-                    setSelectedItems={setSelectedItems}
-                    reservationCode={reservationCode}
-                />
             )}
         </div>
     );
