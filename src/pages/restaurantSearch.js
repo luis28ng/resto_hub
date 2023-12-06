@@ -10,6 +10,10 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import ReCAPTCHA from "react-google-recaptcha";
 import HomePageCarousel from '../components/HomePageCarousel';
+import HomePageCarouselBottom from '../components/HomePageBottom';
+
+
+import { color } from 'framer-motion';
 
 const customStyles = {
     rows: {
@@ -258,7 +262,7 @@ const RestaurantSearch = () => {
 
 
     return (
-        <div>
+        <div style={{ backgroundColor: 'aliceblue' }}>
             <div>
                 <ToastContainer />
                 <HomePageCarousel />
@@ -391,6 +395,8 @@ const RestaurantSearch = () => {
                     </Form>
                 </Container>
             </Modal>
+        <HomePageCarouselBottom />
+
         </div>
     );
 }
