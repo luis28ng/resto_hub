@@ -395,7 +395,7 @@ const RestaurantSearch = () => {
                     </Form>
                 </Container>
             </Modal>
-        <HomePageCarouselBottom />
+        {/* <HomePageCarouselBottom /> */}
 
         </div>
     );
