@@ -24,7 +24,6 @@ const HomePageCarousel = () => {
                     <div style={textStyles}>
                         <h3>Find Good Food Fast</h3>
                         <p>RestoHub allows you to make reservations to any participating restaurant!</p>
-                        <p>WELCOME</p> {/* Add the constant text here */}
                     </div>
                 </div>
             </Carousel.Item>
@@ -33,7 +32,6 @@ const HomePageCarousel = () => {
                     <img className="d-block w-100" src={RestoHubImageTwo} alt="Slide 2" />
                     <div style={textStyles}>
                         <h3>Discover a New Dining Experience</h3>
-                        <p>WELCOME</p> {/* Add the constant text here */}
                     </div>
                 </div>
             </Carousel.Item>
@@ -43,7 +41,6 @@ const HomePageCarousel = () => {
                     <div style={textStyles}>
                         <h3>Restaurant-Friendly</h3>
                         <p>RestoHub makes it easy for Restaurants to view, manage and serve patrons for a world-class experience.</p>
-                        <p>WELCOME</p> {/* Add the constant text here */}
                     </div>
                 </div>
             </Carousel.Item>
