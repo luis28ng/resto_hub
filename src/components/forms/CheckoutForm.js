@@ -35,7 +35,7 @@ const CheckoutForm = ({ amount }) => {
             });
     } else {
       try {
-        const response = await axios.post('http://localhost:8080/api/payment/charge', {
+        const response = await axios.post('http://restohub-api.us-east-2.elasticbeanstalk.com/api/payment/charge', {
           amount: amount, // Amount in cents
           stripeToken: paymentMethod.id,
         });
