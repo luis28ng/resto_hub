@@ -1,0 +1,11 @@
+.form-container {
+    max-width: 400px; /* Set the maximum width for the form */
+    margin: 50px auto 0; /* Center the form horizontally within the container and add 50px top margin */
+    border: 2px solid rgb(0, 0, 0); /* Add a 2px solid blue border around the container */
+    padding: 20px; /* Add padding inside the container if desired */
+}
+
+.cardContainer {
+    max-width: 400px; /* Set the maximum width for the form */
+    padding: 20px; /* Add padding inside the container if desired */
+}
