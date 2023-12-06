@@ -57,7 +57,16 @@ const StaffDashBoard = () => {
                     'Content-Type': 'application/json'
                 }
             });
-            setCheckedInCustomers(response.data);
+
+            const currentDate = new Date();
+
+            const futureItems = response.data.filter(item => {
+                const reservationDate = new Date(item.reservationDate);
+                return reservationDate > currentDate;
+            });
+    
+
+            setCheckedInCustomers(futureItems)
             setActiveTab('checkedInCustomer');
         } catch (error) {
             console.error('Error fetching checked-in customers:', error);
@@ -237,8 +246,8 @@ const StaffDashBoard = () => {
                                     data={checkedInCustomers}
                                     fixedHeader
                                     striped
-                                    expandableRows
-                                    expandableRowsComponent={ExpandableRowComponent}
+                                    // expandableRows
+                                    // expandableRowsComponent={ExpandableRowComponent}
                                 />
                             ) : (
                                 <p>No checked-in customers</p>

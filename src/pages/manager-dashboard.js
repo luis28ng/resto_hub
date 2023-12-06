@@ -178,18 +178,18 @@ const ManagerDashBoard = () => {
     const columns = [
         {name: 'Email', selector: (row, i) => row.email, center: true, sortable: true},
         {name: 'Role', selector: (row, i) => row.appRole, center: true, sortable: true},
-        {
-            name: '',
-            cell: (row, index, column, id) => (
-                <Container style={{ display: 'flex', justifyContent: 'space-around' }}>
-                    <Button onClick={() => handleEditButton(row)} variant="success">Edit</Button>
-                </Container>
-            ),
-            center: true,
-            ignoreRowClick: true,
-            allowOverflow: true,
-            button: true,
-        },
+        // {
+        //     name: '',
+        //     cell: (row, index, column, id) => (
+        //         <Container style={{ display: 'flex', justifyContent: 'space-around' }}>
+        //             <Button onClick={() => handleEditButton(row)} variant="success">Edit</Button>
+        //         </Container>
+        //     ),
+        //     center: true,
+        //     ignoreRowClick: true,
+        //     allowOverflow: true,
+        //     button: true,
+        // },
         {
             name: '',
             cell: (row, index, column, id) => (
