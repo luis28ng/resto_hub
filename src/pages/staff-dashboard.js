@@ -51,7 +51,12 @@ const StaffDashBoard = () => {
     const fetchCheckedInCustomers = async () => {
         console.log("Checked-in tab selected");
         try {
-            const response = await axios.get(`${baseURL}/reservations/getReservedTimes`)
+            const response = await axios.get(`${baseURL}/reservations/checkedIn`, {
+                params: { restaurantId: restaurantId },
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
             setCheckedInCustomers(response.data);
             setActiveTab('checkedInCustomer');
         } catch (error) {
@@ -225,7 +230,7 @@ const StaffDashBoard = () => {
                     </Tab>
                     <Tab eventKey="checkedInCustomer" title="Checked-In Customer">
                         <br></br>
-                        <Container>
+                        <Container style={{marginBottom: '100px'}}>
                             {checkedInCustomers && checkedInCustomers.length > 0 ? (
                                 <DataTable
                                     columns={columns}
